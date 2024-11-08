@@ -14,9 +14,11 @@ public class GlobalExceptionHandler : IExceptionHandler
         {
             case EntityErrorException entityException:
                 var errors = entityException.Errors;
+                problemDetails.Status = StatusCodes.Status422UnprocessableEntity;
                 problemDetails.Extensions.Add("message", entityException.Message);
                 problemDetails.Extensions.Add("errors", errors);
                 problemDetails.Extensions.Add("statusCode", StatusCodes.Status422UnprocessableEntity);
+                httpContext.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
                 break;
         }
 

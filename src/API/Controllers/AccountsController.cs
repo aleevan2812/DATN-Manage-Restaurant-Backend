@@ -36,9 +36,42 @@ public class AccountsController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> CreateEmployee(CreateEmployeeCommand cmd)
+    public async Task<IActionResult> CreateEmployee(CreateEmployeeCommand cmd) //emp
     {
         var res = await _sender.Send(cmd);
+        return Ok(res);
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Owner")]
+    public async Task<IActionResult> GetEmployees() // emp
+    {
+        var res = await _sender.Send(new GetEmployeesQuery());
+        return Ok(res);
+    }
+
+    [HttpGet("detail/{id}")]
+    [Authorize(Roles = "Owner")]
+    public async Task<IActionResult> GetDetailAccount(int id) // emp
+    {
+        var res = await _sender.Send(new GetDetailAccountQuery(id));
+        return Ok(res);
+    }
+
+    [HttpPut("detail/{id}")]
+    [Authorize(Roles = "Owner")]
+    public async Task<IActionResult> UpdateDetailAccount(int id, UpdateEmployeeDetailCommand command) // emp
+    {
+        command.Id = id;
+        var res = await _sender.Send(command);
+        return Ok(res);
+    }
+
+    [HttpDelete("detail/{id}")]
+    [Authorize(Roles = "Owner")]
+    public async Task<IActionResult> DeleteEmployee(int id)
+    {
+        var res = await _sender.Send(new DeleteEmployeeCommand(id));
         return Ok(res);
     }
 }
