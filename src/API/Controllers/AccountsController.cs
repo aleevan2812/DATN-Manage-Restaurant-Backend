@@ -33,4 +33,12 @@ public class AccountsController : ControllerBase
         var res = await _sender.Send(new UpdateMeCommand(userId, cmd.Name, cmd.Avatar));
         return Ok(res);
     }
+
+    [HttpPost]
+    [Authorize(Roles = "Owner")]
+    public async Task<IActionResult> CreateEmployee(CreateEmployeeCommand cmd)
+    {
+        var res = await _sender.Send(cmd);
+        return Ok(res);
+    }
 }

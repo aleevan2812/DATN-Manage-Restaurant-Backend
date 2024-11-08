@@ -13,5 +13,7 @@ public class MappingProfile : Profile
         CreateMap<AccountDto, Account>().ReverseMap();
         CreateMap<GetUserProfileResponse, Account>().ReverseMap();
         CreateMap<UpdateMeCommandResponse, Account>().ReverseMap();
+        CreateMap<CreateEmployeeCommand, Account>().ReverseMap();
+        CreateMap<CreateEmployeeCommandResponse, Account>().ReverseMap();
     }
 }

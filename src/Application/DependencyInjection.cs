@@ -12,6 +12,8 @@ public static class DependencyInjection
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddScoped<CloudinaryService>();
 
+        services.AddHttpContextAccessor();
+
         // services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         services.AddMediatR(cfg =>
