@@ -19,5 +19,6 @@ public class MappingProfile : Profile
         CreateMap<GetDetailAccountQueryResponse, Account>().ReverseMap();
         CreateMap<UpdateEmployeeDetailCommandResponse, Account>().ReverseMap();
         CreateMap<DeleteEmployeeCommandResponse, Account>().ReverseMap();
+        CreateMap<ChangePasswordCommandResponse, Account>().ReverseMap();
     }
 }

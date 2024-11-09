@@ -74,4 +74,11 @@ public class AccountsController : ControllerBase
         var res = await _sender.Send(new DeleteEmployeeCommand(id));
         return Ok(res);
     }
+
+    [HttpPut("change-password")]
+    public async Task<IActionResult> ChangePassword(ChangePasswordCommand command)
+    {
+        var res = await _sender.Send(command);
+        return Ok(res);
+    }
 }
