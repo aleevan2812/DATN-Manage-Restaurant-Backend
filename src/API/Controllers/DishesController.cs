@@ -24,11 +24,33 @@ public class DishesController : ControllerBase
         var res = await _sender.Send(cmd);
         return Ok(res);
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetDishes()
     {
         var res = await _sender.Send(new GetDishesQuery());
+        return Ok(res);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetDishById(int id)
+    {
+        var res = await _sender.Send(new GetDishByIdQuery { Id = id });
+        return Ok(res);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateDishById(int id, UpdateDishByIdCommand command)
+    {
+        command.Id = id;
+        var res = await _sender.Send(command);
+        return Ok(res);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteDishById(int id)
+    {
+        var res = await _sender.Send(new DeleteDishByIdCommand { Id = id });
         return Ok(res);
     }
 }

@@ -43,5 +43,9 @@ public class MappingProfile : Profile
         CreateMap<CreateDishCommand, Dish>().ReverseMap();
         CreateMap<CreateDishCommandResponse, Dish>().ReverseMap();
         CreateMap<GetDishesQueryResponse, Dish>().ReverseMap();
+        CreateMap<GetDishByIdQueryResponse, Dish>().ReverseMap();
+        CreateMap<DeleteDishByIdCommandResponse, Dish>().ReverseMap();
+        CreateMap<UpdateDishByIdCommand, Dish>().ReverseMap();
+        CreateMap<UpdateDishByIdCommandResponse, Dish>().ReverseMap();
     }
 }

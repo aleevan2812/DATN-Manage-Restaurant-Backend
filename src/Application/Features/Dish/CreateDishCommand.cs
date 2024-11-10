@@ -9,7 +9,7 @@ public class CreateDishCommandResponse
 {
     public int Id { get; set; }
     public string? Name { get; set; }
-    public int Price { get; set; }
+    public int? Price { get; set; }
     public string? Description { get; set; }
     public string? Image { get; set; }
     public string? Status { get; set; }
@@ -20,7 +20,7 @@ public class CreateDishCommandResponse
 public class CreateDishCommand : IRequest<BaseResponse<CreateDishCommandResponse>>
 {
     public string? Name { get; set; }
-    public int Price { get; set; }
+    public int? Price { get; set; }
     public string? Description { get; set; }
     public string? Image { get; set; }
     public string? Status { get; set; }
