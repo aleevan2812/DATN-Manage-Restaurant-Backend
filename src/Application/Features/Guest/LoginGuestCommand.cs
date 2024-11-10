@@ -66,7 +66,7 @@ public class LoginGuestCommandHandler : IRequestHandler<LoginGuestCommand, BaseR
         await _context.SaveChangesAsync(cancellationToken);
 
         var refreshToken = TokenService.GenerateAccessToken(guest.Id, Role.Guest,
-            "hoc_lap_trinh_edu_duthanhduoc_com_access", DateTime.UtcNow.AddHours(12));
+            "hoc_lap_trinh_edu_duthanhduoc_com_refresh", DateTime.UtcNow.AddHours(12));
         var accessToken = TokenService.GenerateAccessToken(guest.Id, Role.Guest,
             "hoc_lap_trinh_edu_duthanhduoc_com_access", DateTime.UtcNow.AddMinutes(15));
 

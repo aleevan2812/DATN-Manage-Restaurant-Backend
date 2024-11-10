@@ -14,9 +14,16 @@ public class GuestController : ControllerBase
     {
         _sender = sender;
     }
-    
+
     [HttpPost("auth/login")]
     public async Task<IActionResult> LoginGuest(LoginGuestCommand cmd) //emp
+    {
+        var res = await _sender.Send(cmd);
+        return Ok(res);
+    }
+
+    [HttpPost("auth/refresh-token")]
+    public async Task<IActionResult> LoginGuest(RefreshTokenCommand cmd) //emp
     {
         var res = await _sender.Send(cmd);
         return Ok(res);
