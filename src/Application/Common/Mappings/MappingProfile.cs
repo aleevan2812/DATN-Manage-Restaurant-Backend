@@ -1,6 +1,7 @@
 using Application.Dtos;
 using Application.Features.Account.Commands;
 using Application.Features.Account.Queries;
+using Application.Features.Dish;
 using Application.Features.Guest;
 using Application.Features.Table.Commands;
 using Application.Features.Table.Queries;
@@ -37,5 +38,10 @@ public class MappingProfile : Profile
         // guest 
         CreateMap<LoginGuestCommand, Guest>().ReverseMap();
         CreateMap<GuestDto, Guest>().ReverseMap();
+
+        // dish
+        CreateMap<CreateDishCommand, Dish>().ReverseMap();
+        CreateMap<CreateDishCommandResponse, Dish>().ReverseMap();
+        CreateMap<GetDishesQueryResponse, Dish>().ReverseMap();
     }
 }
