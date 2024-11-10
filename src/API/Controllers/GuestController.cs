@@ -28,4 +28,14 @@ public class GuestController : ControllerBase
         var res = await _sender.Send(cmd);
         return Ok(res);
     }
+
+    [HttpPost("orders")]
+    public async Task<IActionResult> CreateOrderByGuest(List<GuestCreateOrderRequest>? orders) //emp
+    {
+        var res = await _sender.Send(new GuestCreateOrderCommand
+        {
+            Orders = orders
+        });
+        return Ok(res);
+    }
 }

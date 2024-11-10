@@ -27,6 +27,8 @@ public class MappingProfile : Profile
         CreateMap<DeleteEmployeeCommandResponse, Account>().ReverseMap();
         CreateMap<ChangePasswordCommandResponse, Account>().ReverseMap();
 
+        CreateMap<AccountResponse, Account>().ReverseMap();
+
         // table
         CreateMap<CreateTableCommand, Table>().ReverseMap();
         CreateMap<CreateTableCommandResponse, Table>().ReverseMap();
@@ -47,5 +49,16 @@ public class MappingProfile : Profile
         CreateMap<DeleteDishByIdCommandResponse, Dish>().ReverseMap();
         CreateMap<UpdateDishByIdCommand, Dish>().ReverseMap();
         CreateMap<UpdateDishByIdCommandResponse, Dish>().ReverseMap();
+
+        // dishSnapshot
+        CreateMap<DishSnapshot, Dish>().ReverseMap();
+        CreateMap<DishSnapshot, DishSnapshotResponse>().ReverseMap();
+        CreateMap<GuestInforResponse, Guest>().ReverseMap();
+
+        // order
+        CreateMap<Order, GuestCreateOrderCommandResponse>()
+            .ForMember(dest => dest.Guest, opt => opt.Ignore())
+            .ForMember(dest => dest.DishSnapshot, opt => opt.Ignore())
+            .ForMember(dest => dest.OrderHandler, opt => opt.Ignore());
     }
 }

@@ -127,8 +127,6 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DishId");
-
                     b.ToTable("DishSnapshots");
                 });
 
@@ -174,22 +172,22 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("DishSnapshotId")
+                    b.Property<int?>("DishSnapshotId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GuestId")
+                    b.Property<int?>("GuestId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderHandlerId")
+                    b.Property<int?>("OrderHandlerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
+                    b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("TableNumber")
+                    b.Property<int?>("TableNumber")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateAt")
@@ -202,8 +200,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("GuestId");
 
                     b.HasIndex("OrderHandlerId");
-
-                    b.HasIndex("TableNumber");
 
                     b.ToTable("Orders");
                 });
@@ -271,50 +267,25 @@ namespace Infrastructure.Migrations
                     b.ToTable("Tables");
                 });
 
-            modelBuilder.Entity("Core.Entities.DishSnapshot", b =>
-                {
-                    b.HasOne("Core.Entities.Dish", "Dish")
-                        .WithMany()
-                        .HasForeignKey("DishId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Dish");
-                });
-
             modelBuilder.Entity("Core.Entities.Order", b =>
                 {
                     b.HasOne("Core.Entities.DishSnapshot", "DishSnapshot")
                         .WithMany()
-                        .HasForeignKey("DishSnapshotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DishSnapshotId");
 
                     b.HasOne("Core.Entities.Guest", "Guest")
                         .WithMany()
-                        .HasForeignKey("GuestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GuestId");
 
                     b.HasOne("Core.Entities.Account", "Account")
                         .WithMany()
-                        .HasForeignKey("OrderHandlerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.Table", "Table")
-                        .WithMany()
-                        .HasForeignKey("TableNumber")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderHandlerId");
 
                     b.Navigation("Account");
 
                     b.Navigation("DishSnapshot");
 
                     b.Navigation("Guest");
-
-                    b.Navigation("Table");
                 });
 #pragma warning restore 612, 618
         }
