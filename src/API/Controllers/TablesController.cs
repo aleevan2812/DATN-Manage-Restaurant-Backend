@@ -18,7 +18,7 @@ public class TablesController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Owner")]
+    [Authorize]
     public async Task<IActionResult> CreateTable(CreateTableCommand cmd)
     {
         var res = await _sender.Send(cmd);

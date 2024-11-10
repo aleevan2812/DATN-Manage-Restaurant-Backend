@@ -46,8 +46,10 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, B
 
         var accountDto = _mapper.Map<AccountDto>(account);
 
-        var accessToken = TokenService.GenerateAccessToken(account.Id, account.Role);
-        var refreshToken = TokenService.GenerateAccessToken(account.Id, account.Role);
+        var accessToken = TokenService.GenerateAccessToken(account.Id, account.Role,
+            "hoc_lap_trinh_edu_duthanhduoc_com_access", DateTime.UtcNow.AddHours(24));
+        var refreshToken = TokenService.GenerateAccessToken(account.Id, account.Role,
+            "hoc_lap_trinh_edu_duthanhduoc_com_refresh", DateTime.UtcNow.AddHours(24));
 
         var response = new RefreshTokenResponse
         {

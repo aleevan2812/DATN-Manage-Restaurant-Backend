@@ -7,7 +7,7 @@ namespace Application.Services;
 
 public class TokenService
 {
-    public static string GenerateAccessToken(int userId, string role)
+    public static string GenerateAccessToken(int userId, string role, string securityKey, DateTime expiration)
     {
         var claims = new[]
         {
@@ -20,7 +20,7 @@ public class TokenService
                 new DateTimeOffset(DateTime.UtcNow.AddDays(7)).ToUnixTimeSeconds().ToString())
         };
 
-        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("hoc_lap_trinh_edu_duthanhduoc_com_access"));
+        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(securityKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
