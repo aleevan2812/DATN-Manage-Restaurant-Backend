@@ -8,6 +8,7 @@ public class BadRequestException : Exception
     {
         Error = error;
         StatusCode = statusCode;
+        Message = message;
     }
 
     public HttpStatusCode StatusCode { get; }
