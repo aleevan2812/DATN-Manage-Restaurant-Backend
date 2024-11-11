@@ -39,4 +39,11 @@ public class OrdersController : ControllerBase
         });
         return Ok(res);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateOrder(CreateOrderCommand cmd) //emp
+    {
+        var res = await _sender.Send(cmd);
+        return Ok(res);
+    }
 }

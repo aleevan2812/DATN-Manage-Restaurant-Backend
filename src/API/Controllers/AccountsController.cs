@@ -20,7 +20,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpGet("me")]
-    [Authorize(Roles = Role.Owner)]
+    [Authorize(Roles = Role.Owner + "," + Role.Employee)]
     public async Task<IActionResult> GetUserProfile()
     {
         var userId = User.FindFirst("userId")?.Value;
