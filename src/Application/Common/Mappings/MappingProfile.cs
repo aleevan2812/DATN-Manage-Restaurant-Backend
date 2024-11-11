@@ -36,11 +36,13 @@ public class MappingProfile : Profile
         CreateMap<GetTableByNumberQueryResponse, Table>().ReverseMap();
         CreateMap<UpdateTableCommandResponse, Table>().ReverseMap();
         CreateMap<DeleteTableByNumberCommandResponse, Table>().ReverseMap();
-        CreateMap<TableResponse, Table>().ReverseMap();
+        CreateMap<Table, TableResponse>().ReverseMap();
+        ;
 
         // guest 
         CreateMap<LoginGuestCommand, Guest>().ReverseMap();
         CreateMap<GuestDto, Guest>().ReverseMap();
+        CreateMap<Guest, GetGuestsByDateQueryResponse>().ReverseMap();
 
         // dish
         CreateMap<CreateDishCommand, Dish>().ReverseMap();

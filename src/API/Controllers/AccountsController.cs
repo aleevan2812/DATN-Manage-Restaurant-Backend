@@ -1,5 +1,6 @@
 using Application.Features.Account.Commands;
 using Application.Features.Account.Queries;
+using Core.Const;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpGet("me")]
+    [Authorize(Roles = Role.Owner)]
     public async Task<IActionResult> GetUserProfile()
     {
         var userId = User.FindFirst("userId")?.Value;
@@ -35,7 +37,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Owner")]
+    [Authorize(Roles = Role.Owner)]
     public async Task<IActionResult> CreateEmployee(CreateEmployeeCommand cmd) //emp
     {
         var res = await _sender.Send(cmd);
@@ -43,7 +45,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "Owner")]
+    [Authorize(Roles = Role.Owner)]
     public async Task<IActionResult> GetEmployees() // emp
     {
         var res = await _sender.Send(new GetEmployeesQuery());
@@ -51,7 +53,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpGet("detail/{id}")]
-    [Authorize(Roles = "Owner")]
+    [Authorize(Roles = Role.Owner)]
     public async Task<IActionResult> GetDetailAccount(int id) // emp
     {
         var res = await _sender.Send(new GetDetailAccountQuery(id));
@@ -59,7 +61,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpPut("detail/{id}")]
-    [Authorize(Roles = "Owner")]
+    [Authorize(Roles = Role.Owner)]
     public async Task<IActionResult> UpdateDetailAccount(int id, UpdateEmployeeDetailCommand command) // emp
     {
         command.Id = id;
@@ -68,7 +70,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpDelete("detail/{id}")]
-    [Authorize(Roles = "Owner")]
+    [Authorize(Roles = Role.Owner)]
     public async Task<IActionResult> DeleteEmployee(int id)
     {
         var res = await _sender.Send(new DeleteEmployeeCommand(id));
@@ -79,6 +81,15 @@ public class AccountsController : ControllerBase
     public async Task<IActionResult> ChangePassword(ChangePasswordCommand command)
     {
         var res = await _sender.Send(command);
+        return Ok(res);
+    }
+
+    [HttpGet("guests")]
+    [Authorize(Roles = Role.Owner + "," + Role.Employee)]
+    public async Task<IActionResult>
+        GetGuestsByDate([FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate) // emp
+    {
+        var res = await _sender.Send(new GetGuestsByDateQuery { FromDate = fromDate, ToDate = toDate });
         return Ok(res);
     }
 }
