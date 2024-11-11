@@ -1,4 +1,4 @@
-namespace Application.Dtos;
+namespace Core.Dtos;
 
 public class AccountWithAvatarDto
 {

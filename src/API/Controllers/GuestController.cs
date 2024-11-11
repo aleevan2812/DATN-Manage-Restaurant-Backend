@@ -38,4 +38,11 @@ public class GuestController : ControllerBase
         });
         return Ok(res);
     }
+
+    [HttpGet("orders")]
+    public async Task<IActionResult> GetGuestOrders() //emp
+    {
+        var res = await _sender.Send(new GetGuestOrderQuery());
+        return Ok(res);
+    }
 }
