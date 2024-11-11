@@ -2,6 +2,7 @@ using System.Net;
 using Application.Common.Interfaces;
 using Application.Exceptions;
 using Application.Features.Guest;
+using Application.Services;
 using AutoMapper;
 using Common.Models.Response;
 using Core.Const;
@@ -22,11 +23,13 @@ public class
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ISignalRService _signalRService;
 
-    public CreateOrderCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public CreateOrderCommandHandler(IApplicationDbContext context, IMapper mapper, ISignalRService signalRService)
     {
         _context = context;
         _mapper = mapper;
+        _signalRService = signalRService;
     }
 
     public async Task<BaseResponse<List<GuestCreateOrderCommandResponse>>> Handle(CreateOrderCommand request,
@@ -115,6 +118,8 @@ public class
                 }
 
                 await transaction.CommitAsync(cancellationToken);
+
+                _ = _signalRService.SendMessage("new-order", orders);
             }
             catch (Exception e)
             {
