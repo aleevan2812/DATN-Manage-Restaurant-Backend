@@ -36,6 +36,7 @@ public class MappingProfile : Profile
         CreateMap<GetTableByNumberQueryResponse, Table>().ReverseMap();
         CreateMap<UpdateTableCommandResponse, Table>().ReverseMap();
         CreateMap<DeleteTableByNumberCommandResponse, Table>().ReverseMap();
+        CreateMap<TableResponse, Table>().ReverseMap();
 
         // guest 
         CreateMap<LoginGuestCommand, Guest>().ReverseMap();
@@ -61,5 +62,6 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.DishSnapshot, opt => opt.Ignore())
             .ForMember(dest => dest.OrderHandler, opt => opt.Ignore());
         CreateMap<Order, GetOrdersByDateQueryResponse>().ReverseMap();
+        CreateMap<Order, GetOrderByIdQueryResponse>().ReverseMap();
     }
 }

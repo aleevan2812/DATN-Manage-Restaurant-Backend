@@ -28,4 +28,15 @@ public class OrdersController : ControllerBase
         });
         return Ok(res);
     }
+
+    [HttpGet("{id}")]
+    [Authorize(Roles = Role.Owner + "," + Role.Employee)]
+    public async Task<IActionResult> GetOrderById(int id)
+    {
+        var res = await _sender.Send(new GetOrderByIdQuery
+        {
+            Id = id
+        });
+        return Ok(res);
+    }
 }
