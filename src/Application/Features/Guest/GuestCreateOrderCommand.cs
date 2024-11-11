@@ -91,7 +91,7 @@ public class GuestCreateOrderCommandHandler : IRequestHandler<GuestCreateOrderCo
         var guestId = _httpContextAccessor.HttpContext?.User.FindFirst("userId").Value;
         var guest = await _context.Guests.FirstOrDefaultAsync(i => i.Id == int.Parse(guestId), cancellationToken);
 
-        var table = await _context.Tables.FirstOrDefaultAsync(i => i.Id == guest.TableNumber, cancellationToken);
+        var table = await _context.Tables.FirstOrDefaultAsync(i => i.Number == guest.TableNumber, cancellationToken);
         if (table == null)
             throw new BadRequestException(null,
                 "Bàn của bạn đã bị xóa, vui lòng đăng xuất và đăng nhập lại một bàn mới",
@@ -107,50 +107,79 @@ public class GuestCreateOrderCommandHandler : IRequestHandler<GuestCreateOrderCo
                 HttpStatusCode.BadRequest);
 
         var orders = new List<GuestCreateOrderCommandResponse>();
-        if (request.Orders != null)
-            foreach (var order in request.Orders)
+        var newDishSnapshots = new List<DishSnapshot>();
+        var newOrders = new List<Core.Entities.Order>();
+        await using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
+        {
+            try
             {
-                var dish = await _context.Dishes.FirstOrDefaultAsync(i => i.Id == order.DishId, cancellationToken);
-                if (dish == null) continue;
-                if (dish.Status == DishStatus.Unavailable)
-                    throw new BadRequestException(null,
-                        $"Món {dish.Name} đã hết",
-                        HttpStatusCode.BadRequest);
-                if (dish.Status == DishStatus.Hidden)
-                    throw new BadRequestException(null,
-                        $"Món {dish.Name} không thể đặt",
-                        HttpStatusCode.BadRequest);
-
-                var dishSnapshot = new DishSnapshot
+                if (request.Orders != null)
                 {
-                    Name = dish.Name,
-                    Price = dish.Price,
-                    Description = dish.Description,
-                    Status = dish.Status,
-                    Image = dish.Image,
-                    DishId = dish.Id
-                };
-                await _context.DishSnapshots.AddAsync(dishSnapshot, cancellationToken);
-                await _context.SaveChangesAsync(cancellationToken);
+                    foreach (var order in request.Orders)
+                    {
+                        var dish = await _context.Dishes.FirstOrDefaultAsync(i => i.Id == order.DishId,
+                            cancellationToken);
+                        if (dish == null) continue;
+                        if (dish.Status == DishStatus.Unavailable)
+                            throw new BadRequestException(null,
+                                $"Món {dish.Name} đã hết",
+                                HttpStatusCode.BadRequest);
+                        if (dish.Status == DishStatus.Hidden)
+                            throw new BadRequestException(null,
+                                $"Món {dish.Name} không thể đặt",
+                                HttpStatusCode.BadRequest);
 
-                var createdOrder = new Core.Entities.Order
-                {
-                    DishSnapshotId = dishSnapshot.Id,
-                    GuestId = int.Parse(guestId),
-                    Quantity = order.Quantity,
-                    TableNumber = guest.TableNumber,
-                    OrderHandlerId = null,
-                    Status = OrderStatus.Pending
-                };
-                await _context.Orders.AddAsync(createdOrder, cancellationToken);
-                await _context.SaveChangesAsync(cancellationToken);
+                        var dishSnapshot = new DishSnapshot
+                        {
+                            Name = dish.Name,
+                            Price = dish.Price,
+                            Description = dish.Description,
+                            Status = dish.Status,
+                            Image = dish.Image,
+                            DishId = dish.Id
+                        };
+                        newDishSnapshots.Add(dishSnapshot);
+                    }
 
-                var orderResponse = _mapper.Map<GuestCreateOrderCommandResponse>(createdOrder);
-                orderResponse.Guest = _mapper.Map<GuestInforResponse>(guest);
-                orderResponse.DishSnapshot = _mapper.Map<DishSnapshotResponse>(dishSnapshot);
-                orderResponse.OrderHandler = null;
-                orders.Add(orderResponse);
+                    await _context.DishSnapshots.AddRangeAsync(newDishSnapshots, cancellationToken);
+                    await _context.SaveChangesAsync(cancellationToken);
+
+                    foreach (var order in request.Orders)
+                    {
+                        var dishSnapshot = newDishSnapshots.FirstOrDefault(ds => ds.DishId == order.DishId);
+                        if (dishSnapshot == null)
+                            continue;
+                        var createdOrder = new Core.Entities.Order
+                        {
+                            DishSnapshotId = dishSnapshot.Id,
+                            GuestId = int.Parse(guestId),
+                            Quantity = order.Quantity,
+                            TableNumber = guest.TableNumber,
+                            OrderHandlerId = null,
+                            Status = OrderStatus.Pending
+                        };
+                        newOrders.Add(createdOrder);
+
+                        var orderResponse = _mapper.Map<GuestCreateOrderCommandResponse>(createdOrder);
+                        orderResponse.Guest = _mapper.Map<GuestInforResponse>(guest);
+                        orderResponse.DishSnapshot = _mapper.Map<DishSnapshotResponse>(dishSnapshot);
+                        orderResponse.OrderHandler = null;
+                        orders.Add(orderResponse);
+                    }
+
+                    await _context.Orders.AddRangeAsync(newOrders, cancellationToken);
+                    await _context.SaveChangesAsync(cancellationToken);
+                }
+
+                await transaction.CommitAsync(cancellationToken);
             }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        }
+
 
         return new BaseResponse<List<GuestCreateOrderCommandResponse>>(orders, "Đặt món thành công");
     }

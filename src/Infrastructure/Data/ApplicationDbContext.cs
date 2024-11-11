@@ -2,6 +2,7 @@
 using Application.Common.Interfaces;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Infrastructure.Data;
 
@@ -18,6 +19,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Table> Tables => Set<Table>();
     public DbSet<Dish> Dishes => Set<Dish>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DatabaseFacade Database => base.Database;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
