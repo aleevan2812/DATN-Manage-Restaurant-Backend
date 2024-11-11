@@ -59,10 +59,10 @@ public class MappingProfile : Profile
         CreateMap<GuestInforResponse, Guest>().ReverseMap();
 
         // order
-        CreateMap<Order, GuestCreateOrderCommandResponse>()
-            .ForMember(dest => dest.Guest, opt => opt.Ignore())
-            .ForMember(dest => dest.DishSnapshot, opt => opt.Ignore())
-            .ForMember(dest => dest.OrderHandler, opt => opt.Ignore());
+        CreateMap<Order, GuestCreateOrderCommandResponse>();
+        // .ForMember(dest => dest.Guest, opt => opt.Ignore())
+        // .ForMember(dest => dest.DishSnapshot, opt => opt.Ignore())
+        // .ForMember(dest => dest.OrderHandler, opt => opt.Ignore());
         CreateMap<Order, GetOrdersByDateQueryResponse>().ReverseMap();
         CreateMap<Order, GetOrderByIdQueryResponse>().ReverseMap();
     }

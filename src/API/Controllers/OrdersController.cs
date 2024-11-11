@@ -46,4 +46,12 @@ public class OrdersController : ControllerBase
         var res = await _sender.Send(cmd);
         return Ok(res);
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> CreateOrder(int id, UpdateOrderCommand cmd) //emp
+    {
+        cmd.OrderId = id;
+        var res = await _sender.Send(cmd);
+        return Ok(res);
+    }
 }
