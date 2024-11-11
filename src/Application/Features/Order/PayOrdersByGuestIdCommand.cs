@@ -2,6 +2,7 @@ using System.Net;
 using Application.Common.Interfaces;
 using Application.Exceptions;
 using Application.Features.Guest;
+using Application.Services;
 using AutoMapper;
 using Common.Models.Response;
 using Core.Const;
@@ -22,13 +23,15 @@ public class PayOrdersByGuestIdCommandHandler : IRequestHandler<PayOrdersByGuest
     private readonly IApplicationDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMapper _mapper;
+    private readonly ISignalRService _signalRService;
 
     public PayOrdersByGuestIdCommandHandler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor,
-        IMapper mapper)
+        IMapper mapper, ISignalRService signalRService)
     {
         _context = context;
         _httpContextAccessor = httpContextAccessor;
         _mapper = mapper;
+        _signalRService = signalRService;
     }
 
     public async Task<BaseResponse<List<GuestCreateOrderCommandResponse>>> Handle(PayOrdersByGuestIdCommand request,
@@ -39,9 +42,10 @@ public class PayOrdersByGuestIdCommandHandler : IRequestHandler<PayOrdersByGuest
             .Include(i => i.Guest)
             .Include(i => i.DishSnapshot)
             .Where(i => i.GuestId == request.GuestId).ToList();
-        
-        if (!orders.Any())  throw new BadRequestException(null, "Không có hóa đơn nào cần thanh toán",
-            HttpStatusCode.BadRequest);
+
+        if (!orders.Any())
+            throw new BadRequestException(null, "Không có hóa đơn nào cần thanh toán",
+                HttpStatusCode.BadRequest);
 
         foreach (var order in orders)
         {
@@ -55,7 +59,9 @@ public class PayOrdersByGuestIdCommandHandler : IRequestHandler<PayOrdersByGuest
 
         var res = _mapper.Map<List<GuestCreateOrderCommandResponse>>(orders);
 
+        _ = _signalRService.SendMessage("payment", res);
+
         return new BaseResponse<List<GuestCreateOrderCommandResponse>>(
-            _mapper.Map<List<GuestCreateOrderCommandResponse>>(orders), $"Thanh toán thành công {orders.Count} đơn");
+            res, $"Thanh toán thành công {orders.Count} đơn");
     }
 }

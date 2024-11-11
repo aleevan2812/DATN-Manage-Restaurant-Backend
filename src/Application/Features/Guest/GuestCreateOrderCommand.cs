@@ -1,6 +1,7 @@
 using System.Net;
 using Application.Common.Interfaces;
 using Application.Exceptions;
+using Application.Services;
 using AutoMapper;
 using Common.Models.Response;
 using Core.Const;
@@ -76,13 +77,15 @@ public class GuestCreateOrderCommandHandler : IRequestHandler<GuestCreateOrderCo
     private readonly IApplicationDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMapper _mapper;
+    private readonly ISignalRService _signalRService;
 
     public GuestCreateOrderCommandHandler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor,
-        IMapper mapper)
+        IMapper mapper, ISignalRService signalRService)
     {
         _context = context;
         _httpContextAccessor = httpContextAccessor;
         _mapper = mapper;
+        _signalRService = signalRService;
     }
 
     public async Task<BaseResponse<List<GuestCreateOrderCommandResponse>>> Handle(GuestCreateOrderCommand request,
@@ -180,6 +183,7 @@ public class GuestCreateOrderCommandHandler : IRequestHandler<GuestCreateOrderCo
             }
         }
 
+        _ = _signalRService.SendMessage("new-order", orders);
 
         return new BaseResponse<List<GuestCreateOrderCommandResponse>>(orders, "Đặt món thành công");
     }

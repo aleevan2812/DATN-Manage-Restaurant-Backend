@@ -1,8 +1,6 @@
-using Application.Features.Guest;
-
 namespace Application.Services;
 
 public interface ISignalRService
 {
-    Task SendMessage(string method, GuestCreateOrderCommandResponse order);
+    Task SendMessage(string method, object order);
 }

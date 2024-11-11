@@ -1,4 +1,3 @@
-using Application.Features.Guest;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Application.Services;
@@ -16,7 +15,7 @@ public class SignalRService : ISignalRService
         _hubContext = hubContext;
     }
 
-    public async Task SendMessage(string method, GuestCreateOrderCommandResponse order)
+    public async Task SendMessage(string method, object order)
     {
         await _hubContext.Clients.All.SendAsync(method, order);
     }
