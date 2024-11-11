@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Infrastructure.Configurations;
+using Infrastructure.Converters;
 using Infrastructure.Data;
 using Infrastructure.Data.Interceptors;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -20,6 +21,11 @@ public static class DependencyInjection
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
         // services.AddScoped<ApplicationDbContextInitialiser>();
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new CustomDateTimeConverter());
+            });
         return services;
     }
 }

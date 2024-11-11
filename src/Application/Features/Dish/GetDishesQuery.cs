@@ -14,7 +14,7 @@ public class GetDishesQueryResponse
     public string? Image { get; set; }
     public string? Status { get; set; }
     public DateTime? CreatedAt { get; set; }
-    public DateTime? UpdateAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }
 
 public class GetDishesQuery : IRequest<BaseResponse<List<GetDishesQueryResponse>>>

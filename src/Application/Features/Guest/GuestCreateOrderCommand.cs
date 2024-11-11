@@ -17,7 +17,7 @@ public class GuestInforResponse
     public string? Name { get; set; }
     public int? TableNumber { get; set; }
     public DateTime? CreatedAt { get; set; }
-    public DateTime? UpdateAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }
 
 public class DishSnapshotResponse
@@ -30,7 +30,7 @@ public class DishSnapshotResponse
     public string? Status { get; set; }
     public int DishId { get; set; }
     public DateTime? CreatedAt { get; set; }
-    public DateTime? UpdateAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }
 
 public class AccountResponse
@@ -52,7 +52,7 @@ public class GuestCreateOrderCommandResponse
     public int? OrderHandlerId { get; set; }
     public string? Status { get; set; }
     public DateTime? CreatedAt { get; set; }
-    public DateTime? UpdateAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
     public GuestInforResponse? Guest { get; set; }
     public DishSnapshotResponse? DishSnapshot { get; set; }

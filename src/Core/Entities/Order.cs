@@ -19,5 +19,5 @@ public class Order : BaseEntity
 
     public int? OrderHandlerId { get; set; }
 
-    [ForeignKey("OrderHandlerId")] public Account? Account { get; set; }
+    [ForeignKey("OrderHandlerId")] public Account? OrderHandler { get; set; }
 }

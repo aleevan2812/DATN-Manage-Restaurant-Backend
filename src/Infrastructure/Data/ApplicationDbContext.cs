@@ -25,5 +25,11 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        builder.Entity<DishSnapshot>()
+            .HasOne(ds => ds.Dish)
+            .WithMany(d => d.Snapshots)
+            .HasForeignKey(ds => ds.DishId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

@@ -7,4 +7,5 @@ public class Dish : BaseEntity
     public string? Description { get; set; }
     public string? Image { get; set; }
     public string? Status { get; set; }
+    public virtual ICollection<DishSnapshot> Snapshots { get; set; }
 }

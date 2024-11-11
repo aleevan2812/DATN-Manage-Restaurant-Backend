@@ -13,7 +13,7 @@ public class DeleteTableByNumberCommandResponse
     public string? Status { get; set; }
     public string? Token { get; set; }
     public DateTime? CreatedAt { get; set; }
-    public DateTime? UpdateAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }
 
 public class DeleteTableByNumberCommand : IRequest<BaseResponse<DeleteTableByNumberCommandResponse>>

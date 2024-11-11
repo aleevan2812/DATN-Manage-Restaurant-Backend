@@ -2,6 +2,7 @@ using Application.Features.Account.Commands;
 using Application.Features.Account.Queries;
 using Application.Features.Dish;
 using Application.Features.Guest;
+using Application.Features.Order;
 using Application.Features.Table.Commands;
 using Application.Features.Table.Queries;
 using AutoMapper;
@@ -59,5 +60,6 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Guest, opt => opt.Ignore())
             .ForMember(dest => dest.DishSnapshot, opt => opt.Ignore())
             .ForMember(dest => dest.OrderHandler, opt => opt.Ignore());
+        CreateMap<Order, GetOrdersByDateQueryResponse>().ReverseMap();
     }
 }

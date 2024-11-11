@@ -17,7 +17,7 @@ public class GetGuestOrderQueryResponse
     public int? OrderHandlerId { get; set; }
     public string? Status { get; set; }
     public DateTime? CreatedAt { get; set; }
-    public DateTime? UpdateAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
     public GuestInforResponse? Guest { get; set; }
     public DishSnapshotResponse? DishSnapshot { get; set; }

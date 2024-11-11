@@ -31,7 +31,7 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
             {
                 if (entry.State == EntityState.Added) entry.Entity.CreatedAt = DateTime.Now;
 
-                entry.Entity.UpdateAt = DateTime.Now;
+                entry.Entity.UpdatedAt = DateTime.Now;
             }
     }
 }
