@@ -54,4 +54,11 @@ public class OrdersController : ControllerBase
         var res = await _sender.Send(cmd);
         return Ok(res);
     }
+
+    [HttpPost("pay")]
+    public async Task<IActionResult> PayOrdersByGuestId(PayOrdersByGuestIdCommand cmd) //emp
+    {
+        var res = await _sender.Send(cmd);
+        return Ok(res);
+    }
 }
