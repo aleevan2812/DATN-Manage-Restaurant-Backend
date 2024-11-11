@@ -11,6 +11,7 @@ public static class DependencyInjection
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddScoped<CloudinaryService>();
+        services.AddScoped<ISignalRService, SignalRService>();
 
         services.AddHttpContextAccessor();
 
@@ -27,6 +28,8 @@ public static class DependencyInjection
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
+
+        services.AddSignalR();
 
         return services;
     }

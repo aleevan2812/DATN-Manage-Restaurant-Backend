@@ -1,5 +1,6 @@
 using Application.Common.Interfaces;
 using Application.Features.Guest;
+using Application.Services;
 using AutoMapper;
 using Common.Models.Response;
 using Core.Entities;
@@ -23,19 +24,24 @@ public class
     private readonly IApplicationDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMapper _mapper;
+    private readonly ISignalRService _signalRService;
 
     public UpdateOrderCommandHandler(IApplicationDbContext context, IMapper mapper,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor, ISignalRService signalRService)
     {
         _context = context;
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
+        _signalRService = signalRService;
     }
 
     public async Task<BaseResponse<GuestCreateOrderCommandResponse>> Handle(UpdateOrderCommand request,
         CancellationToken cancellationToken)
     {
-        var order = await _context.Orders.FirstOrDefaultAsync(i => i.Id == request.OrderId, cancellationToken);
+        var order = await _context.Orders
+            .Include(i => i.OrderHandler)
+            .Include(i => i.Guest)
+            .FirstOrDefaultAsync(i => i.Id == request.OrderId, cancellationToken);
         if (order != null)
         {
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
@@ -68,8 +74,11 @@ public class
 
                 await transaction.CommitAsync(cancellationToken);
 
-                return new BaseResponse<GuestCreateOrderCommandResponse>(
-                    _mapper.Map<GuestCreateOrderCommandResponse>(order), "Cập nhật đơn hàng thành công");
+                var res = _mapper.Map<GuestCreateOrderCommandResponse>(order);
+                _ = _signalRService.SendMessage("update-order", res);
+
+                return new BaseResponse<GuestCreateOrderCommandResponse>(res
+                    , "Cập nhật đơn hàng thành công");
             }
             catch (Exception e)
             {

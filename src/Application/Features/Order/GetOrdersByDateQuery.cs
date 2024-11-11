@@ -53,10 +53,11 @@ public class
         var fromDate = request.FromDate;
         var toDate = request.ToDate;
 
+        var test = _context.Orders.ToList();
         var query = _context.Orders
             .Include(i => i.Guest)
             .Include(i => i.DishSnapshot)
-            .Include(i => i.OrderHandler)
+            // .Include(i => i.OrderHandler)
             .AsQueryable();
         if (fromDate.HasValue) query = query.Where(o => o.CreatedAt >= fromDate);
 

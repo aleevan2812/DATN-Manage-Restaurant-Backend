@@ -1,8 +1,10 @@
 using System.Text;
 using API;
 using Application;
+using Application.Services;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +20,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(p =>
-    p.AddPolicy("corsapp", builder => { builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader(); }));
+    p.AddPolicy("corsapp", builder =>
+    {
+        builder.WithOrigins("http://localhost:3000")
+            .AllowCredentials().AllowAnyMethod().AllowAnyHeader();
+    }));
 
 builder.Services
     // Thêm dịch vụ xác thực vào ứng dụng và chỉ định rằng sẽ sử dụng xác thực JWT Bearer.
@@ -42,6 +48,8 @@ builder.Services
     });
 
 var app = builder.Build();
+
+app.MapHub<NotificationHub>("/notifications");
 
 app.UseExceptionHandler();
 
