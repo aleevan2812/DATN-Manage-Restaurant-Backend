@@ -43,6 +43,7 @@ public class
         var order = await _context.Orders
             .Include(i => i.OrderHandler)
             .Include(i => i.Guest)
+            .Include(i => i.DishSnapshot)
             .FirstOrDefaultAsync(i => i.Id == request.OrderId, cancellationToken);
         
         if( IsWithinLast24Hours((DateTime)order.CreatedAt) == false)
@@ -60,22 +61,7 @@ public class
                 var userId = _httpContextAccessor.HttpContext?.User.FindFirst("userId").Value;
                 if (userId != null)
                     order.OrderHandlerId = int.Parse(userId);
-
-                var dish = await _context.Dishes.FirstOrDefaultAsync(i => i.Id == request.DishId, cancellationToken);
-                var dishSnapshot = new DishSnapshot
-                {
-                    Name = dish.Name,
-                    Price = dish.Price,
-                    Description = dish.Description,
-                    Status = dish.Status,
-                    Image = dish.Image,
-                    DishId = dish.Id
-                };
-                // create DishSnapshot
-                await _context.DishSnapshots.AddAsync(dishSnapshot, cancellationToken);
-                await _context.SaveChangesAsync(cancellationToken);
-
-                order.DishSnapshotId = dishSnapshot.Id;
+                
                 _context.Orders.Update(order);
                 await _context.SaveChangesAsync(cancellationToken);
 
