@@ -1,4 +1,6 @@
+using System.Net;
 using Application.Common.Interfaces;
+using Application.Exceptions;
 using Application.Features.Guest;
 using Application.Services;
 using AutoMapper;
@@ -42,6 +44,11 @@ public class
             .Include(i => i.OrderHandler)
             .Include(i => i.Guest)
             .FirstOrDefaultAsync(i => i.Id == request.OrderId, cancellationToken);
+        
+        if( IsWithinLast24Hours((DateTime)order.CreatedAt) == false)
+            throw new BadRequestException(null, "Quá hạn 24h chỉnh sửa đơn hàng!",
+                HttpStatusCode.BadRequest);
+        
         if (order != null)
         {
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
@@ -89,4 +96,18 @@ public class
 
         return new BaseResponse<GuestCreateOrderCommandResponse>();
     }
+    
+    public bool IsWithinLast24Hours(DateTime createdAt)
+    {
+        if(createdAt == null) return false;
+        // Get the current time
+        DateTime now = DateTime.Now;
+    
+        // Calculate the time difference
+        TimeSpan timeDifference = now - createdAt;
+    
+        // Check if the difference is within 24 hours
+        return timeDifference.TotalHours <= 24;
+    }
 }
+
