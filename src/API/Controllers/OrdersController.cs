@@ -28,7 +28,7 @@ public class OrdersController : ControllerBase
         });
         return Ok(res);
     }
-    
+
     [HttpGet("revenue")]
     [Authorize(Roles = Role.Owner)]
     public async Task<IActionResult> GetOrdersAndRevenue()
@@ -68,6 +68,14 @@ public class OrdersController : ControllerBase
     [HttpPost("pay")]
     [Authorize(Roles = Role.Owner + "," + Role.Employee)]
     public async Task<IActionResult> PayOrdersByGuestId(PayOrdersByGuestIdCommand cmd) //emp
+    {
+        var res = await _sender.Send(cmd);
+        return Ok(res);
+    }
+
+    [HttpPost("reject")]
+    [Authorize(Roles = Role.Owner + "," + Role.Employee)]
+    public async Task<IActionResult> RejectOrdersByGuestId(RejectOrdersByGuestIdCommand cmd) //emp
     {
         var res = await _sender.Send(cmd);
         return Ok(res);

@@ -94,17 +94,18 @@ public class GuestCreateOrderCommandHandler : IRequestHandler<GuestCreateOrderCo
         var guestId = _httpContextAccessor.HttpContext?.User.FindFirst("userId").Value;
         var guest = await _context.Guests.FirstOrDefaultAsync(i => i.Id == int.Parse(guestId), cancellationToken);
 
-        var table = await _context.Tables.FirstOrDefaultAsync(i => i.Number == guest.TableNumber, cancellationToken);
-        if (table == null)
+        if (guest?.TableNumber == null)
             throw new BadRequestException(null,
                 "Bàn của bạn đã bị xóa, vui lòng đăng xuất và đăng nhập lại một bàn mới",
                 HttpStatusCode.BadRequest);
+        
+        var table = await _context.Tables.FirstOrDefaultAsync(i => i.Number == guest.TableNumber, cancellationToken);
 
-        if (table.Status == Status.Hidden)
+        if (table?.Status == Status.Hidden)
             throw new BadRequestException(null,
                 $"Bàn {table.Number} đã bị ẩn, vui lòng đăng xuất và chọn bàn khác",
                 HttpStatusCode.BadRequest);
-        if (table.Status == Status.Reserved)
+        if (table?.Status == Status.Reserved)
             throw new BadRequestException(null,
                 $"Bàn {table.Number} đã bị ẩn, đã được đặt trước, vui lòng đăng xuất và chọn bàn khác",
                 HttpStatusCode.BadRequest);

@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Core.Entities;
 
 public class Guest : BaseEntity
@@ -9,5 +7,5 @@ public class Guest : BaseEntity
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiresAt { get; set; }
 
-    public int TableNumber { get; set; }
+    public int? TableNumber { get; set; }
 }

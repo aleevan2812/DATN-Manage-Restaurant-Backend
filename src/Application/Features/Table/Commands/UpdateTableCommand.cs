@@ -38,17 +38,39 @@ public class UpdateTableCommandHandler : IRequestHandler<UpdateTableCommand, Bas
     public async Task<BaseResponse<UpdateTableCommandResponse>> Handle(UpdateTableCommand request,
         CancellationToken cancellationToken)
     {
-        var table = await _context.Tables.FirstOrDefaultAsync(t => t.Number == request.Number);
-        table.Capacity = request.Capacity;
-        table.Status = request.Status;
-        if (request.ChangeToken) table.Token = Guid.NewGuid().ToString("N");
+        using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
-        _context.Tables.Update(table);
+        try
+        {
+            var table = await _context.Tables.FirstOrDefaultAsync(t => t.Number == request.Number, cancellationToken);
+            if (table != null)
+            {
+                table.Capacity = request.Capacity;
+                table.Status = request.Status;
+                if (request.ChangeToken)
+                {
+                    table.Token = Guid.NewGuid().ToString("N");
+                    var guests = _context.Guests
+                        .Where(i => i.TableNumber == table.Number)
+                        .ToList();
+                    foreach (var guest in guests) guest.TableNumber = null;
+                }
 
-        await _context.SaveChangesAsync(cancellationToken);
+                _context.Tables.Update(table);
+                await _context.SaveChangesAsync(cancellationToken);
+                
+                await transaction.CommitAsync(cancellationToken);
 
-        var response = _mapper.Map<UpdateTableCommandResponse>(table);
+                var response = _mapper.Map<UpdateTableCommandResponse>(table);
+                return new BaseResponse<UpdateTableCommandResponse>(response, "Cập nhật bàn thành công!");
+            }
 
-        return new BaseResponse<UpdateTableCommandResponse>(response, "Cập nhật bàn thành công!");
+            return new BaseResponse<UpdateTableCommandResponse>(null, "Không tìm thấy bàn!");
+        }
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 }
