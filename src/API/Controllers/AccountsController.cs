@@ -92,4 +92,12 @@ public class AccountsController : ControllerBase
         var res = await _sender.Send(new GetGuestsByDateQuery { FromDate = fromDate, ToDate = toDate });
         return Ok(res);
     }
+
+    [HttpPost("guests")]
+    [Authorize(Roles = Role.Owner + "," + Role.Employee)]
+    public async Task<IActionResult> CreateGuest(CreateGuestCommand cmd) // emp
+    {
+        var res = await _sender.Send(cmd);
+        return Ok(res);
+    }
 }

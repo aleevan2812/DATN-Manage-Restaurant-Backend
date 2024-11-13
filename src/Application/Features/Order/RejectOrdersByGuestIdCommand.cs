@@ -59,7 +59,7 @@ public class RejectOrdersByGuestIdCommandHandler : IRequestHandler<RejectOrdersB
 
         var res = _mapper.Map<List<GuestCreateOrderCommandResponse>>(orders);
 
-        _ = _signalRService.SendMessage("payment", res);
+        _ = _signalRService.SendMessage("reject", res);
 
         return new BaseResponse<List<GuestCreateOrderCommandResponse>>(
             res, $"Từ chối thành công {orders.Count} đơn");
