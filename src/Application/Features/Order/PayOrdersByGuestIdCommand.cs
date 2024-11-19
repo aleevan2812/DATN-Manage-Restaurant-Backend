@@ -1,8 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Exceptions;
 using Application.Features.Guest;
-using Application.Services;
 using AutoMapper;
 using Common.Models.Response;
 using Core.Const;
@@ -23,15 +26,15 @@ public class PayOrdersByGuestIdCommandHandler : IRequestHandler<PayOrdersByGuest
     private readonly IApplicationDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMapper _mapper;
-    private readonly ISignalRService _signalRService;
+    private readonly INotificationService _notificationService;
 
     public PayOrdersByGuestIdCommandHandler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor,
-        IMapper mapper, ISignalRService signalRService)
+        IMapper mapper, INotificationService notificationService)
     {
         _context = context;
         _httpContextAccessor = httpContextAccessor;
         _mapper = mapper;
-        _signalRService = signalRService;
+        _notificationService = notificationService;
     }
 
     public async Task<BaseResponse<List<GuestCreateOrderCommandResponse>>> Handle(PayOrdersByGuestIdCommand request,
@@ -59,7 +62,7 @@ public class PayOrdersByGuestIdCommandHandler : IRequestHandler<PayOrdersByGuest
 
         var res = _mapper.Map<List<GuestCreateOrderCommandResponse>>(orders);
 
-        _ = _signalRService.SendMessage("payment", res);
+        _ = _notificationService.SendMessage("payment", res);
 
         return new BaseResponse<List<GuestCreateOrderCommandResponse>>(
             res, $"Thanh toán thành công {orders.Count} đơn");

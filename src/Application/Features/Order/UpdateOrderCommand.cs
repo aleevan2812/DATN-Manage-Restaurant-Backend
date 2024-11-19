@@ -1,11 +1,12 @@
+using System;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Exceptions;
 using Application.Features.Guest;
-using Application.Services;
 using AutoMapper;
 using Common.Models.Response;
-using Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -26,15 +27,15 @@ public class
     private readonly IApplicationDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMapper _mapper;
-    private readonly ISignalRService _signalRService;
+    private readonly INotificationService _notificationService;
 
     public UpdateOrderCommandHandler(IApplicationDbContext context, IMapper mapper,
-        IHttpContextAccessor httpContextAccessor, ISignalRService signalRService)
+        IHttpContextAccessor httpContextAccessor, INotificationService notificationService)
     {
         _context = context;
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
-        _signalRService = signalRService;
+        _notificationService = notificationService;
     }
 
     public async Task<BaseResponse<GuestCreateOrderCommandResponse>> Handle(UpdateOrderCommand request,
@@ -45,11 +46,11 @@ public class
             .Include(i => i.Guest)
             .Include(i => i.DishSnapshot)
             .FirstOrDefaultAsync(i => i.Id == request.OrderId, cancellationToken);
-        
-        if( IsWithinLast24Hours((DateTime)order.CreatedAt) == false)
+
+        if (IsWithinLast24Hours((DateTime)order.CreatedAt) == false)
             throw new BadRequestException(null, "Quá hạn 24h chỉnh sửa đơn hàng!",
                 HttpStatusCode.BadRequest);
-        
+
         if (order != null)
         {
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
@@ -61,14 +62,14 @@ public class
                 var userId = _httpContextAccessor.HttpContext?.User.FindFirst("userId").Value;
                 if (userId != null)
                     order.OrderHandlerId = int.Parse(userId);
-                
+
                 _context.Orders.Update(order);
                 await _context.SaveChangesAsync(cancellationToken);
 
                 await transaction.CommitAsync(cancellationToken);
 
                 var res = _mapper.Map<GuestCreateOrderCommandResponse>(order);
-                _ = _signalRService.SendMessage("update-order", res);
+                _ = _notificationService.SendMessage("update-order", res);
 
                 return new BaseResponse<GuestCreateOrderCommandResponse>(res
                     , "Cập nhật đơn hàng thành công");
@@ -82,18 +83,17 @@ public class
 
         return new BaseResponse<GuestCreateOrderCommandResponse>();
     }
-    
+
     public bool IsWithinLast24Hours(DateTime createdAt)
     {
-        if(createdAt == null) return false;
+        if (createdAt == null) return false;
         // Get the current time
-        DateTime now = DateTime.Now;
-    
+        var now = DateTime.Now;
+
         // Calculate the time difference
-        TimeSpan timeDifference = now - createdAt;
-    
+        var timeDifference = now - createdAt;
+
         // Check if the difference is within 24 hours
         return timeDifference.TotalHours <= 24;
     }
 }
-

@@ -1,13 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Application.Common.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Application.Services;
+namespace Infrastructure.Services;
 
-public class TokenService
+public class TokenService : ITokenService
 {
-    public static string GenerateAccessToken(int userId, string role, string securityKey, DateTime expiration)
+    public string GenerateAccessToken(int userId, string role, string securityKey, DateTime expiration)
     {
         var claims = new[]
         {
@@ -33,7 +34,7 @@ public class TokenService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public static ClaimsPrincipal ValidateTokenAndGetClaims(string token, string securityKey)
+    public ClaimsPrincipal ValidateTokenAndGetClaims(string token, string securityKey)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var keyBytes = Encoding.ASCII.GetBytes(securityKey);
@@ -69,7 +70,7 @@ public class TokenService
         }
     }
 
-    public static string GenerateRefreshToken(int userId, string role, string securityKey, DateTime expiration)
+    public string GenerateRefreshToken(int userId, string role, string securityKey, DateTime expiration)
     {
         var claims = new[]
         {

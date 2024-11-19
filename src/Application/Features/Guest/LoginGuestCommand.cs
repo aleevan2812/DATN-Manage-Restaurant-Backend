@@ -1,7 +1,9 @@
+using System;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Exceptions;
-using Application.Services;
 using AutoMapper;
 using Common.Models.Response;
 using Core.Const;
@@ -36,11 +38,13 @@ public class LoginGuestCommandHandler : IRequestHandler<LoginGuestCommand, BaseR
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ITokenService _tokenService;
 
-    public LoginGuestCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public LoginGuestCommandHandler(IApplicationDbContext context, IMapper mapper, ITokenService tokenService)
     {
         _context = context;
         _mapper = mapper;
+        _tokenService = tokenService;
     }
 
     public async Task<BaseResponse<LoginGuestCommandResponse>> Handle(LoginGuestCommand request,
@@ -65,9 +69,9 @@ public class LoginGuestCommandHandler : IRequestHandler<LoginGuestCommand, BaseR
         _context.Guests.Add(guest);
         await _context.SaveChangesAsync(cancellationToken);
 
-        var refreshToken = TokenService.GenerateAccessToken(guest.Id, Role.Guest,
+        var refreshToken = _tokenService.GenerateAccessToken(guest.Id, Role.Guest,
             "hoc_lap_trinh_edu_duthanhduoc_com_refresh", DateTime.UtcNow.AddHours(12));
-        var accessToken = TokenService.GenerateAccessToken(guest.Id, Role.Guest,
+        var accessToken = _tokenService.GenerateAccessToken(guest.Id, Role.Guest,
             "hoc_lap_trinh_edu_duthanhduoc_com_access", DateTime.UtcNow.AddMinutes(15));
 
         guest.RefreshTokenExpiresAt = DateTime.UtcNow.AddMinutes(15);

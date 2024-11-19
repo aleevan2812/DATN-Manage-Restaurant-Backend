@@ -26,6 +26,7 @@
     <ItemGroup>
         <Folder Include="Dtos\"/>
         <Folder Include="Features\Auth\Queries\"/>
+        <Folder Include="Services\"/>
     </ItemGroup>
 
 </Project>

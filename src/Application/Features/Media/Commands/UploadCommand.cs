@@ -1,5 +1,6 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Common.Interfaces;
-using Application.Services;
 using AutoMapper;
 using Common.Models.Response;
 using MediatR;
@@ -19,15 +20,15 @@ public class UploadCommand : IRequest<BaseResponse<string>>
 
 public class UploadCommandHandler : IRequestHandler<UploadCommand, BaseResponse<string>>
 {
-    private readonly CloudinaryService _cloudinaryService;
+    private readonly ICloudinaryService _cloudinaryService;
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public UploadCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public UploadCommandHandler(IApplicationDbContext context, IMapper mapper, ICloudinaryService cloudinaryService)
     {
         _context = context;
         _mapper = mapper;
-        _cloudinaryService = new CloudinaryService();
+        _cloudinaryService = cloudinaryService;
     }
 
     public async Task<BaseResponse<string>> Handle(UploadCommand request, CancellationToken cancellationToken)

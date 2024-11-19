@@ -1,7 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Exceptions;
-using Application.Services;
 using AutoMapper;
 using Common.Models.Response;
 using Core.Dtos;
@@ -25,11 +28,13 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, B
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ITokenService _tokenService;
 
-    public RefreshTokenCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public RefreshTokenCommandHandler(IApplicationDbContext context, IMapper mapper, ITokenService tokenService)
     {
         _context = context;
         _mapper = mapper;
+        _tokenService = tokenService;
     }
 
     public async Task<BaseResponse<RefreshTokenResponse>> Handle(RefreshTokenCommand request,
@@ -46,9 +51,9 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, B
 
         var accountDto = _mapper.Map<AccountDto>(account);
 
-        var accessToken = TokenService.GenerateAccessToken(account.Id, account.Role,
+        var accessToken = _tokenService.GenerateAccessToken(account.Id, account.Role,
             "hoc_lap_trinh_edu_duthanhduoc_com_access", DateTime.UtcNow.AddHours(24));
-        var refreshToken = TokenService.GenerateAccessToken(account.Id, account.Role,
+        var refreshToken = _tokenService.GenerateAccessToken(account.Id, account.Role,
             "hoc_lap_trinh_edu_duthanhduoc_com_refresh", DateTime.UtcNow.AddHours(24));
 
         var response = new RefreshTokenResponse

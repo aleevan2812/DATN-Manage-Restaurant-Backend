@@ -1,16 +1,17 @@
+using Application.Common.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Application.Services;
+namespace Infrastructure.Services;
 
 public class NotificationHub : Hub
 {
 }
 
-public class SignalRService : ISignalRService
+public class NotificationService : INotificationService
 {
     private readonly IHubContext<NotificationHub> _hubContext;
 
-    public SignalRService(IHubContext<NotificationHub> hubContext)
+    public NotificationService(IHubContext<NotificationHub> hubContext)
     {
         _hubContext = hubContext;
     }

@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Exceptions;
-using Application.Services;
 using AutoMapper;
 using Common.Models.Response;
 using Core.Const;
@@ -77,15 +81,15 @@ public class GuestCreateOrderCommandHandler : IRequestHandler<GuestCreateOrderCo
     private readonly IApplicationDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMapper _mapper;
-    private readonly ISignalRService _signalRService;
+    private readonly INotificationService _notificationService;
 
     public GuestCreateOrderCommandHandler(IApplicationDbContext context, IHttpContextAccessor httpContextAccessor,
-        IMapper mapper, ISignalRService signalRService)
+        IMapper mapper, INotificationService notificationService)
     {
         _context = context;
         _httpContextAccessor = httpContextAccessor;
         _mapper = mapper;
-        _signalRService = signalRService;
+        _notificationService = notificationService;
     }
 
     public async Task<BaseResponse<List<GuestCreateOrderCommandResponse>>> Handle(GuestCreateOrderCommand request,
@@ -98,7 +102,7 @@ public class GuestCreateOrderCommandHandler : IRequestHandler<GuestCreateOrderCo
             throw new BadRequestException(null,
                 "Bàn của bạn đã bị xóa, vui lòng đăng xuất và đăng nhập lại một bàn mới",
                 HttpStatusCode.BadRequest);
-        
+
         var table = await _context.Tables.FirstOrDefaultAsync(i => i.Number == guest.TableNumber, cancellationToken);
 
         if (table?.Status == Status.Hidden)
@@ -184,7 +188,7 @@ public class GuestCreateOrderCommandHandler : IRequestHandler<GuestCreateOrderCo
             }
         }
 
-        _ = _signalRService.SendMessage("new-order", orders);
+        _ = _notificationService.SendMessage("new-order", orders);
 
         return new BaseResponse<List<GuestCreateOrderCommandResponse>>(orders, "Đặt món thành công");
     }

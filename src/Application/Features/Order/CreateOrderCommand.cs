@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Exceptions;
 using Application.Features.Guest;
-using Application.Services;
 using AutoMapper;
 using Common.Models.Response;
 using Core.Const;
@@ -23,13 +27,14 @@ public class
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
-    private readonly ISignalRService _signalRService;
+    private readonly INotificationService _notificationService;
 
-    public CreateOrderCommandHandler(IApplicationDbContext context, IMapper mapper, ISignalRService signalRService)
+    public CreateOrderCommandHandler(IApplicationDbContext context, IMapper mapper,
+        INotificationService notificationService)
     {
         _context = context;
         _mapper = mapper;
-        _signalRService = signalRService;
+        _notificationService = notificationService;
     }
 
     public async Task<BaseResponse<List<GuestCreateOrderCommandResponse>>> Handle(CreateOrderCommand request,
@@ -119,7 +124,7 @@ public class
 
                 await transaction.CommitAsync(cancellationToken);
 
-                _ = _signalRService.SendMessage("new-order", orders);
+                _ = _notificationService.SendMessage("new-order", orders);
             }
             catch (Exception e)
             {

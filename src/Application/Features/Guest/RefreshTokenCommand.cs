@@ -1,6 +1,8 @@
+using System;
 using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Common.Interfaces;
-using Application.Services;
 using AutoMapper;
 using Common.Models.Response;
 using MediatR;
@@ -24,27 +26,29 @@ public class
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ITokenService _tokenService;
 
-    public ResetPasswordCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public ResetPasswordCommandHandler(IApplicationDbContext context, IMapper mapper, ITokenService tokenService)
     {
         _context = context;
         _mapper = mapper;
+        _tokenService = tokenService;
     }
 
     public async Task<BaseResponse<RefreshTokenCommandResponse>> Handle(RefreshTokenCommand request,
         CancellationToken cancellationToken)
     {
         var principal =
-            TokenService.ValidateTokenAndGetClaims(request.RefreshToken, "hoc_lap_trinh_edu_duthanhduoc_com_refresh");
+            _tokenService.ValidateTokenAndGetClaims(request.RefreshToken, "hoc_lap_trinh_edu_duthanhduoc_com_refresh");
 
         var userId = principal.FindFirst("userId")?.Value;
         var role = principal.FindFirst(ClaimTypes.Role)?.Value;
         var expClaim = principal.FindFirst("exp")?.Value;
         var expiresAt = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expClaim)).UtcDateTime;
 
-        var accessToken = TokenService.GenerateAccessToken(int.Parse(userId), role,
+        var accessToken = _tokenService.GenerateAccessToken(int.Parse(userId), role,
             "hoc_lap_trinh_edu_duthanhduoc_com_access", DateTime.Now.AddMinutes(15));
-        var refreshToken = TokenService.GenerateRefreshToken(int.Parse(userId), role,
+        var refreshToken = _tokenService.GenerateRefreshToken(int.Parse(userId), role,
             "hoc_lap_trinh_edu_duthanhduoc_com_refresh", expiresAt);
 
         var guest = await _context.Guests.FirstOrDefaultAsync(i => i.Id == int.Parse(userId), cancellationToken);

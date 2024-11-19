@@ -1,17 +1,16 @@
 ﻿using System.Reflection;
 using Application.Exceptions;
-using Application.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        services.AddScoped<CloudinaryService>();
-        services.AddScoped<ISignalRService, SignalRService>();
 
         services.AddHttpContextAccessor();
 

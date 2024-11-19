@@ -1,19 +1,21 @@
-﻿using CloudinaryDotNet;
+﻿using Application.Common.Interfaces;
+using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
-namespace Application.Services;
+namespace Infrastructure.Services;
 
-public class CloudinaryService
+public class CloudinaryService : ICloudinaryService
 {
     private readonly Cloudinary _cloudinary;
 
-    public CloudinaryService()
+    public CloudinaryService(IConfiguration configuration)
     {
         var account = new Account(
-            "dwxkytsys",
-            "726737615531745",
-            "G885SdxpzSIsUzG6SDFnAX95Irg");
+            configuration.GetValue<string>("Cloudinary:CloudName"),
+            configuration.GetValue<string>("Cloudinary:ApiKey"),
+            configuration.GetValue<string>("Cloudinary:ApiSecret"));
 
         _cloudinary = new Cloudinary(account);
         _cloudinary.Api.Secure = true;
@@ -22,7 +24,7 @@ public class CloudinaryService
     public async Task<string> UploadImageAsync(IFormFile file)
     {
         if (file == null || file.Length == 0)
-            return null;
+            throw new ArgumentException("File is required and cannot be empty.");
 
         var uploadParams = new ImageUploadParams
         {
