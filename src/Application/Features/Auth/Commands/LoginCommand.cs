@@ -50,9 +50,9 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, BaseResponse<Lo
 
         var jwtTokenId = $"JTI{Guid.NewGuid()}";
         var accessToken =
-            _tokenService.GenerateAccessToken(account.Id, account.Role, jwtTokenId, DateTime.UtcNow.AddHours(24));
+            _tokenService.GenerateAccessToken(account.Id, account.Role, jwtTokenId);
         var refreshToken =
-            await _tokenService.GenerateRefreshToken(account.Id, account.Role, jwtTokenId, DateTime.UtcNow.AddHours(24));
+            await _tokenService.GenerateRefreshToken(account.Id, jwtTokenId, account.Role);
 
         var response = new LoginResponse
         {

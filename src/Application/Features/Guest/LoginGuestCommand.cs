@@ -68,9 +68,9 @@ public class LoginGuestCommandHandler : IRequestHandler<LoginGuestCommand, BaseR
 
         var jwtTokenId = $"JTI{Guid.NewGuid()}";
         var accessToken =
-            _tokenService.GenerateAccessToken(guest.Id, Role.Guest, jwtTokenId, DateTime.UtcNow.AddMinutes(15));
+            _tokenService.GenerateAccessToken(guest.Id, Role.Guest, jwtTokenId);
         var refreshToken =
-            await _tokenService.GenerateRefreshToken(guest.Id, Role.Guest, jwtTokenId, DateTime.UtcNow.AddHours(12));
+            await _tokenService.GenerateRefreshToken(guest.Id, Role.Guest, jwtTokenId);
 
         guest.RefreshTokenExpiresAt = DateTime.UtcNow.AddMinutes(15);
         guest.RefreshToken = refreshToken;

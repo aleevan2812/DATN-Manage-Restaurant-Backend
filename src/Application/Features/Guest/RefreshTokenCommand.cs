@@ -1,7 +1,7 @@
-using System.Security.Claims;
 using Application.Common.Interfaces;
 using AutoMapper;
 using Common.Models.Response;
+using Core.Const;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,14 +39,14 @@ public class
             _tokenService.ValidateTokenAndGetClaims(request.RefreshToken);
 
         var userId = principal.FindFirst("userId")?.Value;
-        var role = principal.FindFirst(ClaimTypes.Role)?.Value;
         var expClaim = principal.FindFirst("exp")?.Value;
         var expiresAt = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expClaim)).UtcDateTime;
 
         var jwtTokenId = $"JTI{Guid.NewGuid()}";
         var accessToken =
-            _tokenService.GenerateAccessToken(int.Parse(userId), role, jwtTokenId, DateTime.Now.AddMinutes(15));
-        var refreshToken = await _tokenService.GenerateRefreshToken(int.Parse(userId), role, jwtTokenId, expiresAt);
+            _tokenService.GenerateAccessToken(int.Parse(userId), Role.Guest, jwtTokenId);
+        var refreshToken =
+            await _tokenService.GenerateRefreshToken(int.Parse(userId), jwtTokenId, Role.Guest, expiresAt);
 
         var guest = await _context.Guests.FirstOrDefaultAsync(i => i.Id == int.Parse(userId), cancellationToken);
         guest.RefreshToken = refreshToken;

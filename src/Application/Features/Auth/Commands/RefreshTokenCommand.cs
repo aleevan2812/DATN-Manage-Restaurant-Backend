@@ -3,8 +3,8 @@ using Application.Common.Interfaces;
 using Application.Exceptions;
 using AutoMapper;
 using Common.Models.Response;
-using Core.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Auth.Commands;
@@ -23,14 +23,17 @@ public class RefreshTokenCommand : IRequest<BaseResponse<RefreshTokenResponse>>
 public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, BaseResponse<RefreshTokenResponse>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMapper _mapper;
     private readonly ITokenService _tokenService;
 
-    public RefreshTokenCommandHandler(IApplicationDbContext context, IMapper mapper, ITokenService tokenService)
+    public RefreshTokenCommandHandler(IApplicationDbContext context, IMapper mapper, ITokenService tokenService,
+        IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
         _mapper = mapper;
         _tokenService = tokenService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<BaseResponse<RefreshTokenResponse>> Handle(RefreshTokenCommand request,
@@ -45,13 +48,9 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, B
                 new("Email && Password", "Email hoặc mật khẩu không đúng")
             }, "Lỗi xảy ra khi xác thực dữ liệu...", HttpStatusCode.UnprocessableEntity);
 
-        var accountDto = _mapper.Map<AccountDto>(account);
-
-        var jwtTokenId = $"JTI{Guid.NewGuid()}";
-        var accessToken =
-            _tokenService.GenerateAccessToken(account.Id, account.Role, jwtTokenId, DateTime.UtcNow.AddHours(24));
-        var refreshToken =
-            await _tokenService.GenerateRefreshToken(account.Id, account.Role, jwtTokenId, DateTime.UtcNow.AddHours(24));
+        var tokenDto = await _tokenService.RefreshToken(request.RefreshToken);
+        var accessToken = tokenDto.AccessToken;
+        var refreshToken = tokenDto.RefreshToken;
 
         var response = new RefreshTokenResponse
         {

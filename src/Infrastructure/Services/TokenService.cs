@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Application.Common.Interfaces;
+using Core.Dtos;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,18 +23,18 @@ public class TokenService : ITokenService
         _refreshTokenSecret = configuration.GetValue<string>("Token:RefreshTokenSecret");
     }
 
-    public string GenerateAccessToken(int userId, string role, string jwtTokenId, DateTime expiration)
+    public string GenerateAccessToken(int userId, string role, string jwtTokenId)
     {
         var claims = new[]
         {
             new Claim("userId", userId.ToString()),
             new Claim("role", role),
-            new Claim("jwtTokenId", jwtTokenId),
             new Claim("tokenType", "AccessToken"),
+            new Claim("jwtTokenId", jwtTokenId),
             new Claim(JwtRegisteredClaimNames.Exp,
-                new DateTimeOffset(expiration).ToUnixTimeSeconds().ToString()),
+                new DateTimeOffset(DateTime.UtcNow.AddSeconds(10)).ToUnixTimeSeconds().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat,
-                new DateTimeOffset(expiration).ToUnixTimeSeconds().ToString())
+                new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_accessTokenSecret));
@@ -43,7 +44,7 @@ public class TokenService : ITokenService
             null, // Thay thế bằng nhà phát hành của bạn
             null, // Thay thế bằng đối tượng của bạn
             claims,
-            expires: expiration,
+            expires: DateTime.UtcNow.AddSeconds(10),
             signingCredentials: credentials
         );
 
@@ -87,17 +88,19 @@ public class TokenService : ITokenService
         }
     }
 
-    public async Task<string> GenerateRefreshToken(int userId, string role, string jwtTokenId, DateTime expiration)
+    public async Task<string> GenerateRefreshToken(int userId, string jwtTokenId, string role,
+        DateTime? expiration = null)
     {
         var claims = new[]
         {
             new Claim("userId", userId.ToString()),
-            new Claim("role", role),
             new Claim("tokenType", "RefreshToken"),
+            new Claim("role", role),
+            new Claim("jwtTokenId", jwtTokenId),
             new Claim(JwtRegisteredClaimNames.Exp,
-                new DateTimeOffset(expiration).ToUnixTimeSeconds().ToString()),
+                new DateTimeOffset(expiration ?? DateTime.UtcNow.AddHours(24)).ToUnixTimeSeconds().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat,
-                new DateTimeOffset(expiration).ToUnixTimeSeconds().ToString())
+                new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_refreshTokenSecret));
@@ -107,7 +110,7 @@ public class TokenService : ITokenService
             null, // Thay thế bằng nhà phát hành của bạn
             null, // Thay thế bằng đối tượng của bạn
             claims,
-            expires: expiration,
+            expires: expiration ?? DateTime.UtcNow.AddHours(24),
             signingCredentials: credentials
         );
 
@@ -118,7 +121,7 @@ public class TokenService : ITokenService
             Token = token,
             IsValid = true,
             AccountId = userId,
-            ExpiresAt = expiration,
+            ExpiresAt = DateTime.UtcNow.AddHours(24),
             JwtTokenId = jwtTokenId
         });
 
@@ -127,24 +130,70 @@ public class TokenService : ITokenService
         return token;
     }
 
-    // public async Task<string> RefreshToken(string oldRefreshToken)
-    // {
-    //     /*Find an existing refresh token*/
-    //     var existingRefreshToken =
-    //         await _context.RefreshTokens.FirstOrDefaultAsync(u => u.Token == oldRefreshToken);
-    //
-    //     if (existingRefreshToken == null) return string.Empty;
-    // }
+    public async Task<TokenDto> RefreshToken(string oldRefreshToken)
+    {
+        /*Find an existing refresh token*/
+        var existingRefreshToken =
+            await _context.RefreshTokens.FirstOrDefaultAsync(u => u.Token == oldRefreshToken);
 
-    private bool IsValidAccessToken(string accessToken, string expectedUserId, string expectedTokenId)
+        if (existingRefreshToken == null) return new TokenDto();
+
+        /*Compare data from existing refresh and access token provided and if there is any missmatch then consider it as a fraud*/
+        var isTokenValid = IsValidToken(oldRefreshToken, existingRefreshToken.AccountId,
+            existingRefreshToken.JwtTokenId);
+        if (!isTokenValid)
+        {
+            await MarkTokenAsInvalid(existingRefreshToken);
+            return new TokenDto();
+        }
+
+        /*When someone tries to use not valid refresh token, fraud possible*/
+        if (!existingRefreshToken.IsValid)
+        {
+            await MarkAllTokenInChainAsInvalid(existingRefreshToken.AccountId);
+            return new TokenDto();
+        }
+
+        /*If just expired then mark as invalid and return empty*/
+        if (existingRefreshToken.ExpiresAt < DateTime.UtcNow)
+        {
+            await MarkTokenAsInvalid(existingRefreshToken);
+            return new TokenDto();
+        }
+
+        var applicationUser = _context.Accounts.FirstOrDefault(u => u.Id == existingRefreshToken.AccountId);
+        if (applicationUser == null)
+            return new TokenDto();
+
+        /*replace old refresh with a new one with updated expire date*/
+        // await MarkAllTokenInChainAsInvalid(existingRefreshToken.AccountId);
+        var newRefreshToken =
+            await GenerateRefreshToken(existingRefreshToken.AccountId, existingRefreshToken.JwtTokenId,
+                applicationUser.Role);
+
+        /*revoke existing refresh token*/
+        await MarkTokenAsInvalid(existingRefreshToken);
+
+        /*generate new access token*/
+        var newAccessToken =
+            GenerateAccessToken(applicationUser.Id, applicationUser.Role, existingRefreshToken.JwtTokenId);
+
+        return new TokenDto
+        {
+            AccessToken = newAccessToken,
+            RefreshToken = newRefreshToken
+        };
+    }
+
+    private bool IsValidToken(string token, int expectedUserId, string expectedTokenId)
     {
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var jwt = tokenHandler.ReadJwtToken(accessToken);
+            var jwt = tokenHandler.ReadJwtToken(token);
             var jwtTokenId = jwt.Claims.FirstOrDefault(u => u.Type == "jwtTokenId")?.Value;
             var userId = jwt.Claims.FirstOrDefault(u => u.Type == "userId")?.Value;
-            return userId == expectedUserId && jwtTokenId == expectedTokenId;
+            return userId == expectedUserId.ToString() && jwtTokenId == expectedTokenId;
         }
         catch
         {
@@ -153,11 +202,11 @@ public class TokenService : ITokenService
     }
 
 
-    private async Task MarkAllTokenInChainAsInvalid(int userId, int tokenId)
+    private Task MarkAllTokenInChainAsInvalid(int userId)
     {
-        await _context.RefreshTokens
-            .Where(u => u.AccountId == userId)
-            .ExecuteUpdateAsync(u => u.SetProperty(refreshToken => refreshToken.IsValid, false));
+        _context.RefreshTokens.Where(u => u.AccountId == userId)
+            .ExecuteUpdate(u => u.SetProperty(refreshToken => refreshToken.IsValid, false));
+        return _context.SaveChangesAsync(default);
     }
 
     private Task MarkTokenAsInvalid(RefreshToken refreshToken)

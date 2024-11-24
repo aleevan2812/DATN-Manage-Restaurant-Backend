@@ -21,4 +21,12 @@ public class AuthController : ControllerBase
         var res = await _sender.Send(command);
         return Ok(res);
     }
+
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken(RefreshTokenCommand command)
+    {
+        var cookieHeader = Request.Cookies;
+        var res = await _sender.Send(command);
+        return Ok(res);
+    }
 }
