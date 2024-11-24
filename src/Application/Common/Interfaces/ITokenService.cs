@@ -6,5 +6,5 @@ public interface ITokenService
 {
     string GenerateAccessToken(int userId, string role, string jwtTokenId, DateTime expiration);
     ClaimsPrincipal ValidateTokenAndGetClaims(string token);
-    Task<string> GenerateRefreshToken(int userId, string role, DateTime expiration);
+    Task<string> GenerateRefreshToken(int userId, string role, string jwtTokenId, DateTime expiration);
 }

@@ -87,7 +87,7 @@ public class TokenService : ITokenService
         }
     }
 
-    public async Task<string> GenerateRefreshToken(int userId, string role, DateTime expiration)
+    public async Task<string> GenerateRefreshToken(int userId, string role, string jwtTokenId, DateTime expiration)
     {
         var claims = new[]
         {
@@ -118,7 +118,8 @@ public class TokenService : ITokenService
             Token = token,
             IsValid = true,
             AccountId = userId,
-            ExpiresAt = expiration
+            ExpiresAt = expiration,
+            JwtTokenId = jwtTokenId
         });
 
         await _context.SaveChangesAsync(default);

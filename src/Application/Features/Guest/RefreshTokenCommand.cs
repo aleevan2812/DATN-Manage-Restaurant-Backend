@@ -46,7 +46,7 @@ public class
         var jwtTokenId = $"JTI{Guid.NewGuid()}";
         var accessToken =
             _tokenService.GenerateAccessToken(int.Parse(userId), role, jwtTokenId, DateTime.Now.AddMinutes(15));
-        var refreshToken = await _tokenService.GenerateRefreshToken(int.Parse(userId), role, expiresAt);
+        var refreshToken = await _tokenService.GenerateRefreshToken(int.Parse(userId), role, jwtTokenId, expiresAt);
 
         var guest = await _context.Guests.FirstOrDefaultAsync(i => i.Id == int.Parse(userId), cancellationToken);
         guest.RefreshToken = refreshToken;

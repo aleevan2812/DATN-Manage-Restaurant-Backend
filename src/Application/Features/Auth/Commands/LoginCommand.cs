@@ -52,7 +52,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, BaseResponse<Lo
         var accessToken =
             _tokenService.GenerateAccessToken(account.Id, account.Role, jwtTokenId, DateTime.UtcNow.AddHours(24));
         var refreshToken =
-            await _tokenService.GenerateRefreshToken(account.Id, account.Role, DateTime.UtcNow.AddHours(24));
+            await _tokenService.GenerateRefreshToken(account.Id, account.Role, jwtTokenId, DateTime.UtcNow.AddHours(24));
 
         var response = new LoginResponse
         {
