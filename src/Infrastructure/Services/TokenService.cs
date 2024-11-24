@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Application.Common.Interfaces;
 using Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -21,12 +22,13 @@ public class TokenService : ITokenService
         _refreshTokenSecret = configuration.GetValue<string>("Token:RefreshTokenSecret");
     }
 
-    public string GenerateAccessToken(int userId, string role, DateTime expiration)
+    public string GenerateAccessToken(int userId, string role, string jwtTokenId, DateTime expiration)
     {
         var claims = new[]
         {
             new Claim("userId", userId.ToString()),
             new Claim("role", role),
+            new Claim("jwtTokenId", jwtTokenId),
             new Claim("tokenType", "AccessToken"),
             new Claim(JwtRegisteredClaimNames.Exp,
                 new DateTimeOffset(expiration).ToUnixTimeSeconds().ToString()),
@@ -49,10 +51,10 @@ public class TokenService : ITokenService
         return token;
     }
 
-    public ClaimsPrincipal ValidateTokenAndGetClaims(string token, string securityKey)
+    public ClaimsPrincipal ValidateTokenAndGetClaims(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var keyBytes = Encoding.ASCII.GetBytes(securityKey);
+        var keyBytes = Encoding.ASCII.GetBytes(_accessTokenSecret);
         var validationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
@@ -122,5 +124,44 @@ public class TokenService : ITokenService
         await _context.SaveChangesAsync(default);
 
         return token;
+    }
+
+    // public async Task<string> RefreshToken(string oldRefreshToken)
+    // {
+    //     /*Find an existing refresh token*/
+    //     var existingRefreshToken =
+    //         await _context.RefreshTokens.FirstOrDefaultAsync(u => u.Token == oldRefreshToken);
+    //
+    //     if (existingRefreshToken == null) return string.Empty;
+    // }
+
+    private bool IsValidAccessToken(string accessToken, string expectedUserId, string expectedTokenId)
+    {
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwt = tokenHandler.ReadJwtToken(accessToken);
+            var jwtTokenId = jwt.Claims.FirstOrDefault(u => u.Type == "jwtTokenId")?.Value;
+            var userId = jwt.Claims.FirstOrDefault(u => u.Type == "userId")?.Value;
+            return userId == expectedUserId && jwtTokenId == expectedTokenId;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+
+    private async Task MarkAllTokenInChainAsInvalid(int userId, int tokenId)
+    {
+        await _context.RefreshTokens
+            .Where(u => u.AccountId == userId)
+            .ExecuteUpdateAsync(u => u.SetProperty(refreshToken => refreshToken.IsValid, false));
+    }
+
+    private Task MarkTokenAsInvalid(RefreshToken refreshToken)
+    {
+        refreshToken.IsValid = false;
+        return _context.SaveChangesAsync(default);
     }
 }

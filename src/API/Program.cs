@@ -43,7 +43,7 @@ builder.Services
             ValidateIssuerSigningKey = true,
             IssuerSigningKey =
                 new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes("hoc_lap_trinh_edu_duthanhduoc_com_access")) // Đổi thành Secret Key của bạn
+                    Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("Token:AccessTokenSecret"))) // Đổi thành Secret Key của bạn
         };
         // Đặt địa chỉ authority (URL của nhà cung cấp định danh)
 

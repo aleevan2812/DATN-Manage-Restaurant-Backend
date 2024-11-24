@@ -48,7 +48,9 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, BaseResponse<Lo
 
         var accountDto = _mapper.Map<AccountDto>(account);
 
-        var accessToken = _tokenService.GenerateAccessToken(account.Id, account.Role, DateTime.UtcNow.AddHours(24));
+        var jwtTokenId = $"JTI{Guid.NewGuid()}";
+        var accessToken =
+            _tokenService.GenerateAccessToken(account.Id, account.Role, jwtTokenId, DateTime.UtcNow.AddHours(24));
         var refreshToken =
             await _tokenService.GenerateRefreshToken(account.Id, account.Role, DateTime.UtcNow.AddHours(24));
 

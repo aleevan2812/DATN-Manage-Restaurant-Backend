@@ -1,7 +1,4 @@
-using System;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Exceptions;
 using AutoMapper;
@@ -69,8 +66,10 @@ public class LoginGuestCommandHandler : IRequestHandler<LoginGuestCommand, BaseR
         _context.Guests.Add(guest);
         await _context.SaveChangesAsync(cancellationToken);
 
+        var jwtTokenId = $"JTI{Guid.NewGuid()}";
+        var accessToken =
+            _tokenService.GenerateAccessToken(guest.Id, Role.Guest, jwtTokenId, DateTime.UtcNow.AddMinutes(15));
         var refreshToken = await _tokenService.GenerateRefreshToken(guest.Id, Role.Guest, DateTime.UtcNow.AddHours(12));
-        var accessToken = _tokenService.GenerateAccessToken(guest.Id, Role.Guest, DateTime.UtcNow.AddMinutes(15));
 
         guest.RefreshTokenExpiresAt = DateTime.UtcNow.AddMinutes(15);
         guest.RefreshToken = refreshToken;

@@ -36,14 +36,16 @@ public class
         CancellationToken cancellationToken)
     {
         var principal =
-            _tokenService.ValidateTokenAndGetClaims(request.RefreshToken, "hoc_lap_trinh_edu_duthanhduoc_com_refresh");
+            _tokenService.ValidateTokenAndGetClaims(request.RefreshToken);
 
         var userId = principal.FindFirst("userId")?.Value;
         var role = principal.FindFirst(ClaimTypes.Role)?.Value;
         var expClaim = principal.FindFirst("exp")?.Value;
         var expiresAt = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expClaim)).UtcDateTime;
 
-        var accessToken = _tokenService.GenerateAccessToken(int.Parse(userId), role, DateTime.Now.AddMinutes(15));
+        var jwtTokenId = $"JTI{Guid.NewGuid()}";
+        var accessToken =
+            _tokenService.GenerateAccessToken(int.Parse(userId), role, jwtTokenId, DateTime.Now.AddMinutes(15));
         var refreshToken = await _tokenService.GenerateRefreshToken(int.Parse(userId), role, expiresAt);
 
         var guest = await _context.Guests.FirstOrDefaultAsync(i => i.Id == int.Parse(userId), cancellationToken);
