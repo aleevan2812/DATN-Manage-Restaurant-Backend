@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Exceptions;
 using AutoMapper;
@@ -52,10 +48,9 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, BaseResponse<Lo
 
         var accountDto = _mapper.Map<AccountDto>(account);
 
-        var accessToken = _tokenService.GenerateAccessToken(account.Id, account.Role,
-            "hoc_lap_trinh_edu_duthanhduoc_com_access", DateTime.UtcNow.AddHours(24));
-        var refreshToken = _tokenService.GenerateAccessToken(account.Id, account.Role,
-            "hoc_lap_trinh_edu_duthanhduoc_com_refresh", DateTime.UtcNow.AddHours(24));
+        var accessToken = _tokenService.GenerateAccessToken(account.Id, account.Role, DateTime.UtcNow.AddHours(24));
+        var refreshToken =
+            await _tokenService.GenerateRefreshToken(account.Id, account.Role, DateTime.UtcNow.AddHours(24));
 
         var response = new LoginResponse
         {

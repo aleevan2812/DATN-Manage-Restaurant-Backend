@@ -1,7 +1,4 @@
-using System;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using AutoMapper;
 using Common.Models.Response;
@@ -46,10 +43,8 @@ public class
         var expClaim = principal.FindFirst("exp")?.Value;
         var expiresAt = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expClaim)).UtcDateTime;
 
-        var accessToken = _tokenService.GenerateAccessToken(int.Parse(userId), role,
-            "hoc_lap_trinh_edu_duthanhduoc_com_access", DateTime.Now.AddMinutes(15));
-        var refreshToken = _tokenService.GenerateRefreshToken(int.Parse(userId), role,
-            "hoc_lap_trinh_edu_duthanhduoc_com_refresh", expiresAt);
+        var accessToken = _tokenService.GenerateAccessToken(int.Parse(userId), role, DateTime.Now.AddMinutes(15));
+        var refreshToken = await _tokenService.GenerateRefreshToken(int.Parse(userId), role, expiresAt);
 
         var guest = await _context.Guests.FirstOrDefaultAsync(i => i.Id == int.Parse(userId), cancellationToken);
         guest.RefreshToken = refreshToken;

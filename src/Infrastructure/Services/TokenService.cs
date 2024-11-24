@@ -2,13 +2,26 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Application.Common.Interfaces;
+using Core.Entities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Services;
 
 public class TokenService : ITokenService
 {
-    public string GenerateAccessToken(int userId, string role, string securityKey, DateTime expiration)
+    private readonly string _accessTokenSecret;
+    private readonly IApplicationDbContext _context;
+    private readonly string _refreshTokenSecret;
+
+    public TokenService(IApplicationDbContext context, IConfiguration configuration)
+    {
+        _context = context;
+        _accessTokenSecret = configuration.GetValue<string>("Token:AccessTokenSecret");
+        _refreshTokenSecret = configuration.GetValue<string>("Token:RefreshTokenSecret");
+    }
+
+    public string GenerateAccessToken(int userId, string role, DateTime expiration)
     {
         var claims = new[]
         {
@@ -21,17 +34,19 @@ public class TokenService : ITokenService
                 new DateTimeOffset(expiration).ToUnixTimeSeconds().ToString())
         };
 
-        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(securityKey));
+        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_accessTokenSecret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var token = new JwtSecurityToken(
+        var jwtSecurityToken = new JwtSecurityToken(
             null, // Thay thế bằng nhà phát hành của bạn
             null, // Thay thế bằng đối tượng của bạn
             claims,
             expires: expiration,
             signingCredentials: credentials
         );
-        return new JwtSecurityTokenHandler().WriteToken(token);
+
+        var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+        return token;
     }
 
     public ClaimsPrincipal ValidateTokenAndGetClaims(string token, string securityKey)
@@ -70,7 +85,7 @@ public class TokenService : ITokenService
         }
     }
 
-    public string GenerateRefreshToken(int userId, string role, string securityKey, DateTime expiration)
+    public async Task<string> GenerateRefreshToken(int userId, string role, DateTime expiration)
     {
         var claims = new[]
         {
@@ -83,16 +98,29 @@ public class TokenService : ITokenService
                 new DateTimeOffset(expiration).ToUnixTimeSeconds().ToString())
         };
 
-        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(securityKey));
+        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_refreshTokenSecret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var token = new JwtSecurityToken(
+        var jwtSecurityToken = new JwtSecurityToken(
             null, // Thay thế bằng nhà phát hành của bạn
             null, // Thay thế bằng đối tượng của bạn
             claims,
             expires: expiration,
             signingCredentials: credentials
         );
-        return new JwtSecurityTokenHandler().WriteToken(token);
+
+        var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+
+        _context.RefreshTokens.Add(new RefreshToken
+        {
+            Token = token,
+            IsValid = true,
+            AccountId = userId,
+            ExpiresAt = expiration
+        });
+
+        await _context.SaveChangesAsync(default);
+
+        return token;
     }
 }
