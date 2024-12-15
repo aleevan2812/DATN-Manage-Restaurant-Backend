@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Application.Common.Interfaces;
+using Core.Const;
 using Core.Dtos;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +56,7 @@ public class TokenService : ITokenService
     public ClaimsPrincipal ValidateTokenAndGetClaims(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var keyBytes = Encoding.ASCII.GetBytes(_accessTokenSecret);
+        var keyBytes = Encoding.ASCII.GetBytes(_refreshTokenSecret);
         var validationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
@@ -116,6 +117,8 @@ public class TokenService : ITokenService
 
         var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
+        if (string.Equals(role, Role.Guest)) return token;
+        
         _context.RefreshTokens.Add(new RefreshToken
         {
             Token = token,
