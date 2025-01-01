@@ -24,7 +24,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(p =>
     p.AddPolicy("corsapp", builder =>
     {
-        builder.WithOrigins("http://localhost:3000", "http://192.168.137.1:3000",
+        builder.WithOrigins("http://localhost:3000", "http://192.168.1.6:3000", "http://192.168.130.229:3000",
                 "https://5c32-113-23-103-96.ngrok-free.app")
             .AllowCredentials().AllowAnyMethod().AllowAnyHeader();
         // builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
@@ -57,7 +57,7 @@ app.MapHub<NotificationHub>("/notifications");
 
 app.UseExceptionHandler();
 
-app.UseCors("AllowAll");
+// app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

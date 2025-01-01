@@ -1,0 +1,577 @@
+{
+  "id": "a4d0d129-c6ee-4cef-8874-1f54888b736c",
+  "version": "2.0",
+  "name": "DATN_DoiMatKhau",
+  "url": "http://localhost:3000/manage/setting",
+  "tests": [{
+    "id": "3b90d4d5-4693-496a-85be-961a826450ed",
+    "name": "TC_2",
+    "commands": [{
+      "id": "9903799e-3f4b-4fef-9e6e-b50b2851ac15",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:3000/manage/setting",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d26188eb-fa90-40fe-91fb-1121cd43b61d",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1536x816",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ebbfc73f-ea6a-4e06-b3d2-bd83e4a91f4e",
+      "comment": "",
+      "command": "click",
+      "target": "id=oldPassword",
+      "targets": [
+        ["id=oldPassword", "id"],
+        ["name=oldPassword", "name"],
+        ["css=#oldPassword", "css:finder"],
+        ["xpath=//input[@id='oldPassword']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ff4dbe1b-6e9a-487e-a921-b388d3706750",
+      "comment": "",
+      "command": "type",
+      "target": "id=oldPassword",
+      "targets": [
+        ["id=oldPassword", "id"],
+        ["name=oldPassword", "name"],
+        ["css=#oldPassword", "css:finder"],
+        ["xpath=//input[@id='oldPassword']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div/div/input", "xpath:position"]
+      ],
+      "value": "123123"
+    }, {
+      "id": "af2bf9db-4eed-46df-adc8-17c166ac65e8",
+      "comment": "",
+      "command": "click",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["name=password", "name"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0ff3ca82-ad46-4e32-96ac-403d3be32d19",
+      "comment": "",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["name=password", "name"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div[2]/div/input", "xpath:position"]
+      ],
+      "value": "123123"
+    }, {
+      "id": "54cee202-187c-42b8-a0b4-aed5e2dbd49b",
+      "comment": "",
+      "command": "click",
+      "target": "id=confirmPassword",
+      "targets": [
+        ["id=confirmPassword", "id"],
+        ["name=confirmPassword", "name"],
+        ["css=#confirmPassword", "css:finder"],
+        ["xpath=//input[@id='confirmPassword']", "xpath:attributes"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "af79fd49-45d2-4af1-95db-7fb5fe4e6070",
+      "comment": "",
+      "command": "type",
+      "target": "id=confirmPassword",
+      "targets": [
+        ["id=confirmPassword", "id"],
+        ["name=confirmPassword", "name"],
+        ["css=#confirmPassword", "css:finder"],
+        ["xpath=//input[@id='confirmPassword']", "xpath:attributes"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": "1231231"
+    }, {
+      "id": "dffe2fde-30ac-4197-839e-26270a61579d",
+      "comment": "",
+      "command": "click",
+      "target": "css=.items-center:nth-child(4) > .bg-primary",
+      "targets": [
+        ["css=.items-center:nth-child(4) > .bg-primary", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div[4]/button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "61502e66-4fcc-4e60-aa0c-b1f9db127644",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.items-center:nth-child(4) > .bg-primary",
+      "targets": [
+        ["css=.items-center:nth-child(4) > .bg-primary", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div[4]/button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0cdbf2e8-4040-4911-bf13-a659d7f121c6",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=:ro:-form-item-message",
+      "targets": [
+        ["id=:ro:-form-item-message", "id"],
+        ["css=#\\3Aro\\3A-form-item-message", "css:finder"],
+        ["xpath=//p[@id=':ro:-form-item-message']", "xpath:attributes"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'Mật khẩu mới không khớp')]", "xpath:innerText"]
+      ],
+      "value": "Mật khẩu mới không khớp"
+    }]
+  }, {
+    "id": "0ce2335c-fe98-4a0a-bf88-9cf9ee3be0c1",
+    "name": "TC_1",
+    "commands": [{
+      "id": "6c0d3c89-4cb1-4b31-93b7-3c2499d0ab84",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:3000/manage/setting",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ac6bd3b4-0100-41b4-800f-317b2a43f2e7",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1536x816",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "25ec1812-1483-4194-afc3-89e98030c276",
+      "comment": "",
+      "command": "click",
+      "target": "id=oldPassword",
+      "targets": [
+        ["id=oldPassword", "id"],
+        ["name=oldPassword", "name"],
+        ["css=#oldPassword", "css:finder"],
+        ["xpath=//input[@id='oldPassword']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "49c1ffa7-b9e0-4d34-9837-e3c1eaf22741",
+      "comment": "",
+      "command": "type",
+      "target": "id=oldPassword",
+      "targets": [
+        ["id=oldPassword", "id"],
+        ["name=oldPassword", "name"],
+        ["css=#oldPassword", "css:finder"],
+        ["xpath=//input[@id='oldPassword']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div/div/input", "xpath:position"]
+      ],
+      "value": "1"
+    }, {
+      "id": "7f08184d-bb27-4428-aab6-feae34a9bdbb",
+      "comment": "",
+      "command": "click",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["name=password", "name"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c953c1bd-811d-432d-a1b5-99efaafdd5d3",
+      "comment": "",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["name=password", "name"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div[2]/div/input", "xpath:position"]
+      ],
+      "value": "1"
+    }, {
+      "id": "600fc751-cd4d-4135-ac25-7e865123b25d",
+      "comment": "",
+      "command": "click",
+      "target": "id=confirmPassword",
+      "targets": [
+        ["id=confirmPassword", "id"],
+        ["name=confirmPassword", "name"],
+        ["css=#confirmPassword", "css:finder"],
+        ["xpath=//input[@id='confirmPassword']", "xpath:attributes"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2bb2e99e-87f5-4b76-a27f-bb32af2a67c6",
+      "comment": "",
+      "command": "type",
+      "target": "id=confirmPassword",
+      "targets": [
+        ["id=confirmPassword", "id"],
+        ["name=confirmPassword", "name"],
+        ["css=#confirmPassword", "css:finder"],
+        ["xpath=//input[@id='confirmPassword']", "xpath:attributes"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": "1"
+    }, {
+      "id": "f276ccea-ed92-44f2-a83d-bfaf24979683",
+      "comment": "",
+      "command": "click",
+      "target": "css=.items-center:nth-child(4) > .bg-primary",
+      "targets": [
+        ["css=.items-center:nth-child(4) > .bg-primary", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div[4]/button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "40d654d9-35ed-49f5-8bea-087e92f2e285",
+      "comment": "",
+      "command": "click",
+      "target": "css=.overflow-hidden > .pt-0",
+      "targets": [
+        ["css=.overflow-hidden > .pt-0", "css:finder"],
+        ["xpath=//form[2]/div/div[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2157dcf1-fd19-4601-bb1f-51f65cc3ed47",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=:rm:-form-item-message",
+      "targets": [
+        ["id=:rm:-form-item-message", "id"],
+        ["css=#\\3Arm\\3A-form-item-message", "css:finder"],
+        ["xpath=//p[@id=':rm:-form-item-message']", "xpath:attributes"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'String must contain at least 6 character(s)')]", "xpath:innerText"]
+      ],
+      "value": "String must contain at least 6 character(s)"
+    }]
+  }, {
+    "id": "bfa6df80-a904-4590-b39e-ac7a271f11a6",
+    "name": "TC_3",
+    "commands": [{
+      "id": "f46e34bc-a6f8-4ebc-95ac-284ca6625ae2",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:3000/manage/setting",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "09533383-aff6-42ac-a2b8-c98662b7eb7f",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1536x816",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "128dcff2-b4fa-49b1-af79-78e2b7d5f1b8",
+      "comment": "",
+      "command": "click",
+      "target": "id=oldPassword",
+      "targets": [
+        ["id=oldPassword", "id"],
+        ["name=oldPassword", "name"],
+        ["css=#oldPassword", "css:finder"],
+        ["xpath=//input[@id='oldPassword']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "078c838f-9350-4118-ae1a-742377040933",
+      "comment": "",
+      "command": "type",
+      "target": "id=oldPassword",
+      "targets": [
+        ["id=oldPassword", "id"],
+        ["name=oldPassword", "name"],
+        ["css=#oldPassword", "css:finder"],
+        ["xpath=//input[@id='oldPassword']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div/div/input", "xpath:position"]
+      ],
+      "value": "123123123"
+    }, {
+      "id": "21d96faa-9e1b-4f03-9756-48f342228922",
+      "comment": "",
+      "command": "click",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["name=password", "name"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "73ce00ea-0899-44a8-aebc-dff8a404ea9d",
+      "comment": "",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["name=password", "name"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div[2]/div/input", "xpath:position"]
+      ],
+      "value": "123123"
+    }, {
+      "id": "9e78f117-2345-4a27-97b7-582e8b13c508",
+      "comment": "",
+      "command": "click",
+      "target": "id=confirmPassword",
+      "targets": [
+        ["id=confirmPassword", "id"],
+        ["name=confirmPassword", "name"],
+        ["css=#confirmPassword", "css:finder"],
+        ["xpath=//input[@id='confirmPassword']", "xpath:attributes"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6b8c260a-222a-4ac4-962d-9996a2019246",
+      "comment": "",
+      "command": "type",
+      "target": "id=confirmPassword",
+      "targets": [
+        ["id=confirmPassword", "id"],
+        ["name=confirmPassword", "name"],
+        ["css=#confirmPassword", "css:finder"],
+        ["xpath=//input[@id='confirmPassword']", "xpath:attributes"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": "123123"
+    }, {
+      "id": "bcc3d384-3a75-4dc3-b553-c6303979091a",
+      "comment": "",
+      "command": "click",
+      "target": "css=.items-center:nth-child(4) > .bg-primary",
+      "targets": [
+        ["css=.items-center:nth-child(4) > .bg-primary", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div[4]/button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2eae762d-87b7-41db-af9d-e162eaca457a",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=.items-center:nth-child(4) > .border",
+      "targets": [
+        ["css=.items-center:nth-child(4) > .border", "css:finder"],
+        ["xpath=(//button[@type='reset'])[2]", "xpath:attributes"],
+        ["xpath=//div[4]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bf743339-dec3-46ae-87e1-efca54b90b10",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "css=.items-center:nth-child(4) > .border",
+      "targets": [
+        ["css=.items-center:nth-child(4) > .border", "css:finder"],
+        ["xpath=(//button[@type='reset'])[2]", "xpath:attributes"],
+        ["xpath=//div[4]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "da72dc83-7aa4-4546-a969-8a2be27e6e56",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=:rm:-form-item-message",
+      "targets": [
+        ["id=:rm:-form-item-message", "id"],
+        ["css=#\\3Arm\\3A-form-item-message", "css:finder"],
+        ["xpath=//p[@id=':rm:-form-item-message']", "xpath:attributes"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'Mật khẩu cũ không đúng')]", "xpath:innerText"]
+      ],
+      "value": "Mật khẩu cũ không đúng"
+    }]
+  }, {
+    "id": "dd699bc1-4f40-42cd-a57a-0300fa8d39da",
+    "name": "TC_4",
+    "commands": [{
+      "id": "1ec79618-3fe2-4adb-bc8f-fa1557e8e5fd",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:3000/manage/setting",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "196ade42-8043-416c-a6e9-857e2ead67f3",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1536x816",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3d0f823d-1114-4dfb-a135-2d00776716eb",
+      "comment": "",
+      "command": "click",
+      "target": "id=oldPassword",
+      "targets": [
+        ["id=oldPassword", "id"],
+        ["name=oldPassword", "name"],
+        ["css=#oldPassword", "css:finder"],
+        ["xpath=//input[@id='oldPassword']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6a2cb3ab-d4c4-40d5-8f4f-a5bd670f52ea",
+      "comment": "",
+      "command": "type",
+      "target": "id=oldPassword",
+      "targets": [
+        ["id=oldPassword", "id"],
+        ["name=oldPassword", "name"],
+        ["css=#oldPassword", "css:finder"],
+        ["xpath=//input[@id='oldPassword']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div/div/input", "xpath:position"]
+      ],
+      "value": "123123"
+    }, {
+      "id": "4f9977db-6552-43fe-a729-b345b48538ae",
+      "comment": "",
+      "command": "click",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["name=password", "name"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6b360761-23d6-4b96-8361-fcd254c3bf25",
+      "comment": "",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["name=password", "name"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//form[2]/div/div[2]/div/div[2]/div/input", "xpath:position"]
+      ],
+      "value": "123123"
+    }, {
+      "id": "05759722-8162-411b-8588-7590363edc1f",
+      "comment": "",
+      "command": "click",
+      "target": "id=confirmPassword",
+      "targets": [
+        ["id=confirmPassword", "id"],
+        ["name=confirmPassword", "name"],
+        ["css=#confirmPassword", "css:finder"],
+        ["xpath=//input[@id='confirmPassword']", "xpath:attributes"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bfd58f3b-1b54-41db-9a1a-3038123b29cd",
+      "comment": "",
+      "command": "type",
+      "target": "id=confirmPassword",
+      "targets": [
+        ["id=confirmPassword", "id"],
+        ["name=confirmPassword", "name"],
+        ["css=#confirmPassword", "css:finder"],
+        ["xpath=//input[@id='confirmPassword']", "xpath:attributes"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": "123123"
+    }, {
+      "id": "c99a0729-f8b1-45a0-b4d3-30ed629a7b36",
+      "comment": "",
+      "command": "click",
+      "target": "css=.items-center:nth-child(4) > .bg-primary",
+      "targets": [
+        ["css=.items-center:nth-child(4) > .bg-primary", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div[4]/button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bb9dc674-314f-49a0-90c4-2ce1f6e78c81",
+      "comment": "",
+      "command": "click",
+      "target": "css=.opacity-90",
+      "targets": [
+        ["css=.opacity-90", "css:finder"],
+        ["xpath=//li/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0e356910-129e-426a-85ca-8b5383bd59a7",
+      "comment": "",
+      "command": "click",
+      "target": "css=.opacity-90",
+      "targets": [
+        ["css=.opacity-90", "css:finder"],
+        ["xpath=//li/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "52b526c8-9b9a-49f1-8ff1-6d7d85312bfe",
+      "comment": "",
+      "command": "doubleClick",
+      "target": "css=.opacity-90",
+      "targets": [
+        ["css=.opacity-90", "css:finder"],
+        ["xpath=//li/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "768adeec-393d-4552-b76f-aa6cdff24239",
+      "comment": "",
+      "command": "click",
+      "target": "css=.opacity-90",
+      "targets": [
+        ["css=.opacity-90", "css:finder"],
+        ["xpath=//li/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "15211d49-767a-4c52-8574-5123e639c56e",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.opacity-90",
+      "targets": [
+        ["css=.opacity-90", "css:finder"],
+        ["xpath=//li/div/div", "xpath:position"]
+      ],
+      "value": "Đổi mật khẩu thành công"
+    }]
+  }],
+  "suites": [{
+    "id": "d6a7a47c-2036-4501-8a37-d1c262b9059a",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["3b90d4d5-4693-496a-85be-961a826450ed"]
+  }],
+  "urls": ["http://localhost:3000/manage/setting"],
+  "plugins": []
+}

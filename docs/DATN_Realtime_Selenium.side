@@ -1,0 +1,102 @@
+{
+  "id": "22c62db3-8fc4-457a-9bb0-b0c8c3eed582",
+  "version": "2.0",
+  "name": "DATN_Realtime",
+  "url": "http://localhost:3000/tables/2?token=89aba190b0904390bb68acbbb64763ff",
+  "tests": [{
+    "id": "ae6508e4-e53c-492e-95cd-51d7415dae20",
+    "name": "TC_1",
+    "commands": [{
+      "id": "5d4e5168-85ef-4b6f-9f29-62248053ccbf",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:3000/tables/2?token=89aba190b0904390bb68acbbb64763ff",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "7eb6b9b4-8484-4eb5-9bf4-13a8af6e008e",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "974x1032",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "17e467c1-b5ae-4ea6-9b24-4b3245bb621f",
+      "comment": "",
+      "command": "click",
+      "target": "id=name",
+      "targets": [
+        ["id=name", "id"],
+        ["name=name", "name"],
+        ["css=#name", "css:finder"],
+        ["xpath=//input[@id='name']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f5c2548e-2b89-468b-88ce-729928148258",
+      "comment": "",
+      "command": "type",
+      "target": "id=name",
+      "targets": [
+        ["id=name", "id"],
+        ["name=name", "name"],
+        ["css=#name", "css:finder"],
+        ["xpath=//input[@id='name']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "Guest"
+    }, {
+      "id": "5612f320-1d39-43d8-b3d1-d225c49d9323",
+      "comment": "",
+      "command": "click",
+      "target": "css=.bg-primary",
+      "targets": [
+        ["css=.bg-primary", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//form/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Đăng nhập')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f692401f-abe6-4353-aa4d-d29d213f3a63",
+      "comment": "",
+      "command": "click",
+      "target": "css=.flex:nth-child(2) > .flex-shrink-0 path:nth-child(2)",
+      "targets": [
+        ["css=.flex:nth-child(2) > .flex-shrink-0 path:nth-child(2)", "css:finder"]
+      ],
+      "value": ""
+    }, {
+      "id": "6894d960-b875-4027-af38-497768c46126",
+      "comment": "",
+      "command": "click",
+      "target": "css=.py-2",
+      "targets": [
+        ["css=.py-2", "css:finder"],
+        ["xpath=//div[5]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "91141703-77ae-4970-83ec-b6ceb99f0d39",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.opacity-90",
+      "targets": [
+        ["css=.opacity-90", "css:finder"],
+        ["xpath=//li/div/div", "xpath:position"]
+      ],
+      "value": "Món Mẹt phở cuốn (SL: 1) vừa được cập nhật sang trạng thái \"Đang nấu\""
+    }]
+  }],
+  "suites": [{
+    "id": "5a6783af-1233-4612-aab2-fc0d026385f1",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["ae6508e4-e53c-492e-95cd-51d7415dae20"]
+  }],
+  "urls": ["http://localhost:3000/tables/2?token=89aba190b0904390bb68acbbb64763ff"],
+  "plugins": []
+}

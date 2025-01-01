@@ -33,7 +33,7 @@ public class TokenService : ITokenService
             new Claim("tokenType", "AccessToken"),
             new Claim("jwtTokenId", jwtTokenId),
             new Claim(JwtRegisteredClaimNames.Exp,
-                new DateTimeOffset(DateTime.UtcNow.AddSeconds(10)).ToUnixTimeSeconds().ToString()),
+                new DateTimeOffset(DateTime.UtcNow.AddMinutes(15)).ToUnixTimeSeconds().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat,
                 new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString())
         };
@@ -45,7 +45,7 @@ public class TokenService : ITokenService
             null, // Thay thế bằng nhà phát hành của bạn
             null, // Thay thế bằng đối tượng của bạn
             claims,
-            expires: DateTime.UtcNow.AddSeconds(10),
+            expires: DateTime.UtcNow.AddMinutes(15),
             signingCredentials: credentials
         );
 
